@@ -7,8 +7,9 @@
 #include "Quebrado.h"
 #include <iostream>
 
-template <tympename T>
-Quebrado::Quebrado(T num, T den){
+Quebrado::Quebrado(float num, float den){
+	numerador=num;
+	denominador=den;
 }
 
 float Quebrado::getNumerador(){
@@ -19,11 +20,11 @@ float Quebrado::getDenominador(){
 	return denominador;
 }
 
-void Quebrado::setNumerador(T num){
+void Quebrado::setNumerador(float num){
 	numerador=num;
 }
 
-void Quebrado::setDenominador(T den){
+void Quebrado::setDenominador(float den){
 	denominador=den;
 }
 

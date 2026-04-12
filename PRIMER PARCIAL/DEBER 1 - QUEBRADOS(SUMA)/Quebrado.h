@@ -7,17 +7,37 @@
 #ifndef QUEBRADO_H
 #define QUEBRADO_H
 
-class Quebrado{
+#include "IQuebrado.h"
+
+template <typename T>
+class Quebrado : public IQuebrado<T>{
 	private:
-		float numerador;
-		float denominador;
+		T numerador;
+		T denominador;
 	public:
-		Quebrado(float num, float den);
-		float getNumerador();
-		void setNumerador(float num);
-		void setDenominador(float den);
-		float getDenominador();
-		Quebrado sumar(Quebrado otro);
+		Quebrado(T num, T den){
+			this->numerador=num;
+			this->denominador=den;
+		}
+		T getNumerador() override {
+			return numerador;
+		}
+		void setNumerador(T num) override{
+			numerador=num;
+		}
+		void setDenominador(T den) override{
+			denominador=den;
+		}
+		T getDenominador() override{
+			return denominador;
+		}
+		Quebrado<T> sumar(Quebrado<T> otro) override{
+			T n=(this->numerador*otro.getDenominador())+(this->denominador*otro.getNumerador());
+			T d=(this->denominador*otro.getDenominador());
+			return Quebrado(n,d);
+		}
 };
 
 #endif
+
+

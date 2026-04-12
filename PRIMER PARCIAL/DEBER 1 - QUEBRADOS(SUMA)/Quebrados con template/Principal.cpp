@@ -20,11 +20,11 @@ int main(){
 	cin>>num2;
 	cout<<"Ingrese el denominador del segundo quebrado> ";
 	cin>>den2;
-	Quebrado<float> quebrado1(num1,den1);
-	Quebrado<float> quebrado2(num2,den2);
+	Quebrado quebrado1(num1,den1);
+	Quebrado quebrado2(num2,den2);
 	cout<<"Quebrado 1: "<<num1<<"/"<<den1<<endl;
 	cout<<"Quebrado 2: "<<num2<<"/"<<den2<<endl;
-	Quebrado<float> quebrado3=quebrado1.sumar(quebrado2);
+	Quebrado quebrado3=quebrado1.sumar(quebrado2);
 	cout<<"Quebrado 3: "<<quebrado3.getNumerador()<<"/"<<quebrado3.getDenominador()<<endl;
 	return 0;
 }
