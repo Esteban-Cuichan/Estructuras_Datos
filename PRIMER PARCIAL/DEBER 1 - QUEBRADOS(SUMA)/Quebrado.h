@@ -36,6 +36,10 @@ class Quebrado : public IQuebrado<T>{
 			T d=(this->denominador*otro.getDenominador());
 			return Quebrado(n,d);
 		}
+		
+		Quebrado<T> procesar(T q){
+			return q;
+		}
 };
 
 #endif

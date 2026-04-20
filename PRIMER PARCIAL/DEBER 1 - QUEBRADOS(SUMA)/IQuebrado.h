@@ -13,6 +13,7 @@ class IQuebrado{
 		virtual T getDenominador()=0;
 		virtual void setDenominador(T den)=0;
 		virtual Quebrado<T> sumar(Quebrado<T> otro)=0;
+		virtual Quebrado<T> procesar(T q1)=0;
 };
 
 #endif
