@@ -90,6 +90,7 @@ void ingresar(float **mat,int fila, int col){
     }
 
 }
+
 int main()
 {
     int fila=3,col=3;
