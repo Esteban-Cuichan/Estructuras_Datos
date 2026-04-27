@@ -112,6 +112,7 @@ class Matriz : public IMatriz<T>{
             return resultado;
         }*/
 
+        //MULTIPLICACIÓN POR RECURSIVIDAD
         Matriz<T> operator*(const Matriz<T>& otra)const{
             int i,j,k;
             Matriz<T> resultado(fila,columna,profundidad);
@@ -130,5 +131,22 @@ class Matriz : public IMatriz<T>{
             if(l>=A.getColumna()) return 0;
             return (A.getElemento(i,l,k)*B.getElemento(l,j,k)) + calcularRecursivo(A,B,i,j,k,l+1);
         }
+
+        //revisar esta suma
+        /*T sumaDiagonal(const Matriz<T>& mat,int f,int c,int p){
+            int i,j,k;
+            T suma;
+            for(k=0;k<p;k++){
+                for(i=0;i<fila;i++){
+                    for(j=0;j<columna;j++){
+                        if(i=j){
+                            suma+=mat.getElemento(i,j,k);
+                        }
+                    }
+                }
+            }
+            return suma;
+        }*/
+
 };
 #endif
