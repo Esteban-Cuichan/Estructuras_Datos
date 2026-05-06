@@ -28,15 +28,6 @@ int main(){
         }
     }
     miLista->imprimir();
-    cout<<"Para el conteo de nodos que tengan un nombre que empiece por x letra"<<endl;
-    cout<<"Ingrese una letra: ";
-    cin>>letra;
-    conteo=miLista->conteoNodos(letra);
-    cout<<"El numero de nodos que cumplen con eso son: "<<conteo;
-    Nodo* penultimo=miLista->retornoPenultimo();
-    cout<<"Ultimo nodo: "<<penultimo->getCedula()<<" | "<<penultimo->getNombre();
-    miLista->eliminarPrimero();
-    miLista->imprimir();
     delete miLista;
     return 0;
 }

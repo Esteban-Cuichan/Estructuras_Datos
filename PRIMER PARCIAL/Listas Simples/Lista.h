@@ -18,8 +18,5 @@ class Lista:public Operaciones{
         void imprimir();
         Nodo* buscar(string);
         void eliminar(string);
-        int conteoNodos(char);
-        Nodo* retornoPenultimo();
-        void eliminarPrimero();
 };
 #endif
