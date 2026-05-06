@@ -20,6 +20,7 @@ void Lista::insertar(string cedula,string nombre){
 }
 
 void Lista::imprimir(){
+    int contador=0;
     if(cola==nullptr){
         cout<<"No se ha podido encontrar ningun dato ingresado!"<<endl;
         cout<<"LISTA VACÍA!"<<endl;
@@ -29,8 +30,10 @@ void Lista::imprimir(){
         while(aux!=nullptr){
             cout<<"Cedula: "<<aux->getCedula()<<"| Nombre: "<<aux->getNombre()<<endl;
             aux=aux->getAnterior();
+            contador++;
         }
     }
+    
 }
 
 Nodo* Lista::buscar(string cedula){

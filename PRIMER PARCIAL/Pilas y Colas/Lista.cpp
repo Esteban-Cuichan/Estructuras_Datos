@@ -67,35 +67,6 @@ void Lista::eliminar(string cedula){
     cout<<"No se encontro ningun dato que coincida!"<<endl;
 }
 
-int Lista::conteoNodos(char letra){
-    int suma=0;
-    Nodo* aux=cabeza;
-    while(aux!=nullptr){
-        if(aux->getNombre().front()==letra){
-            suma++;
-        }
-        aux=aux->getSiguiente();
-    }
-    return suma;
-}
-
-Nodo* Lista::retornoPenultimo(){
-    if(cabeza==nullptr || cabeza->getSiguiente()==nullptr) return nullptr;
-    Nodo* aux=cabeza;
-    while(aux->getSiguiente()->getSiguiente()!=nullptr){
-        aux=aux->getSiguiente();
-    }
-    return aux->getSiguiente();
-}
-
-void Lista::eliminarPrimero(){
-    if(cabeza!=nullptr){
-        Nodo* aux=cabeza;
-        cabeza=cabeza->getSiguiente();
-        delete aux;
-    }
-}
-
 void Lista::setCabeza(Nodo* cabeza){
     this->cabeza=cabeza;
 }

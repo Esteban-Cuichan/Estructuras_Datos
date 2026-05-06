@@ -9,10 +9,6 @@ class Operaciones{
         virtual Nodo* buscar(string)=0;
         virtual void eliminar(string)=0;
         virtual ~Operaciones() {}
-        //Suma cuantos nodos tienen nombre que empiece con x letra
-        virtual int conteoNodos(char)=0;
-        virtual Nodo* retornoPenultimo()=0;
-        virtual void eliminarPrimero()=0;
 
 };
 #endif
