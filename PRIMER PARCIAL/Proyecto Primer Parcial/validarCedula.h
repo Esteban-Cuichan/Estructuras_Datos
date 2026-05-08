@@ -1,10 +1,14 @@
 #ifndef VALIDARCEDULA_H
 #define VALIDARCEDULA_H
-#include <string>
+#ifdef BUILDING_DLL
+    #define DLL_EXPORT __declspec(dllexport)
+#else
+    #define DLL_EXPORT __declspec(dllimport)
+#endif
 using namespace std;
 
-class validarCedula{
+class DLL_EXPORT validarCedula{
     public:
-        virtual bool validar(const char*)=0;
+        static bool validar(const char*);
 };
 #endif

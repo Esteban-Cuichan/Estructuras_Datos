@@ -18,5 +18,11 @@ class Lista:public Operaciones{
         void imprimir();
         Nodo* buscar(string);
         void eliminar(string);
+        int contarCedulas(string);
+        string buscarProvincia(string);
+        void conteoGeneral();
+        void limpiarpantalla();
+        void guardarArchivoIngreso(string,string);
+        bool busquedaDuplicado(string);
 };
 #endif

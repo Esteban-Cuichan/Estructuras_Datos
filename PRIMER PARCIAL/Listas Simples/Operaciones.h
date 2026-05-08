@@ -9,6 +9,11 @@ class Operaciones{
         virtual Nodo* buscar(string)=0;
         virtual void eliminar(string)=0;
         virtual ~Operaciones() {}
-
+        virtual int contarCedulas(string)=0;
+        virtual string buscarProvincia(string)=0;
+        virtual void conteoGeneral()=0;
+        virtual void limpiarpantalla()=0;
+        virtual void guardarArchivoIngreso(string,string)=0;
+        virtual bool busquedaDuplicado(string)=0;
 };
 #endif

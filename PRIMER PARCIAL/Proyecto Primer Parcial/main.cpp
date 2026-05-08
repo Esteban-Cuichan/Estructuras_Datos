@@ -1,4 +1,4 @@
-#include "validarCedula.h"
+#include "C:\Users\Esteban\Documents\Documentos\PREGRADO SI-ABR26-AGO26\ESTRUCTURAS DE DATOS\PRIMER PARCIAL\Proyecto Primer Parcial\LibreriaValidar\validarCedula.h"
 #include <iostream>
 using namespace std;
 
@@ -10,7 +10,7 @@ int main(void){
         cout << "\n--- VALIDACION CEDULA---" << endl;
         cout << "Ingrese la cedula: ";
         cin >> cedula;
-        if(validar(cedula)) {
+        if(validarCedula::validar(cedula)) {
             cout << ">> RESULTADO: Valida" << endl;
         } else {
             cout << ">> RESULTADO: Invalida" << endl;
