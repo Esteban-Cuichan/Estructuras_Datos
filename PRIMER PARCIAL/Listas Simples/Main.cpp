@@ -9,6 +9,7 @@ int main(){
     const char* charcedula;
     char aux;
     bool continuar=true;
+    int op;
     Lista* miLista=new Lista();
     while(continuar!=false){
         cout<<"-------- INGRESO DE DATOS ---------"<<endl;
@@ -47,6 +48,33 @@ int main(){
         }
         
     }
+    do{
+        cout<<"Desea hacer otra operación?"<<endl;
+        cout<<"1. Modificar cedula/nombre"<<endl;
+        cout<<"2. Buscar usuario"<<endl;
+        cout<<"3. Eliminar usuario"<<endl;
+        cout<<"4. Salir"<<endl;
+        cout<<"Escoga una opcion: ";
+        cin>>op;
+        switch(op){
+            case 1:{
+                cout<<""<<endl;
+            };
+
+            case 2:{
+                cout<<""<<endl;
+            };
+
+            case 3:{
+                cout<<""<<endl;
+            };
+
+            case 4:{
+                cout<<""<<endl;
+            };
+            
+        }
+    }while(op!=4);
     cout<<"Registros en Memoria"<<endl;
     miLista->imprimir();
     cout<<"Empezando a contar cedulas por provincia!"<<endl;

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+//include <regex>
+//#include <cctype>
 using namespace std;
 
 string limpiarEspacios(string str){
@@ -181,7 +183,69 @@ bool Lista::busquedaDuplicado(string cedula){
     return false;
 }
 
+void Lista::modificar(string cedula,string nombre){
 
+}
+
+void Lista::eliminarUsuario(string cedulaAEliminar){
+    ifstream archivoOriginal("usuarios.txt");
+    ofstream archivoTemporal("temporal.txt"); // Archivo de paso
+    string nombreUs, cedulaUs;
+    bool encontrado = false;
+
+    if (!archivoOriginal.is_open()) {
+        cout << "Error al abrir el archivo!" << endl;
+        return;
+    }
+
+    // Leemos el original linea por linea (formato: Nombre,Cedula)
+    while (getline(archivoOriginal, nombreUs, ',')) {
+        if (getline(archivoOriginal, cedulaUs)) {
+            // Limpieza de caracteres invisibles (\r)
+            if (!cedulaUs.empty() && cedulaUs.back() == '\r') cedulaUs.pop_back();
+
+            // Si la cedula NO es la que queremos borrar, la escribimos en el temporal
+            if (cedulaUs != cedulaAEliminar) {
+                archivoTemporal << nombreUs << "," << cedulaUs << endl;
+            } else {
+                encontrado = true; // La saltamos (la "borramos")
+            }
+        }
+    }
+
+    archivoOriginal.close();
+    archivoTemporal.close();
+
+    // Reemplazamos el archivo viejo por el nuevo
+    remove("usuarios.txt");             // Borra el original
+    rename("temporal.txt", "usuarios.txt"); // Renombra el temporal
+
+    if (encontrado) {
+        cout << "Usuario con cedula " << cedulaAEliminar << " eliminado del archivo." << endl;
+    } else {
+        cout << "No se encontro la cedula en el archivo." << endl;
+    }
+}
+
+string Lista::buscarUsuario(string cedula){
+    ifstream archivo("usuarios.txt");
+    string cedulaArchivo;
+    string nombre;
+    if(!archivo.is_open()){
+        cout<<"No se pudo encontrar el archivo"<<endl;
+    }
+    while(getline(archivo,nombre,',')){
+        if(getline(archivo,cedulaArchivo)){
+            cedulaArchivo=limpiarEspacios(cedulaArchivo);
+            if(cedulaArchivo==cedula){
+                archivo.close();
+                return nombre;
+            }
+        }
+    }
+    archivo.close();
+    return "Usuario no encontrado!";
+}
 
 void Lista::setCabeza(Nodo* cabeza){
     this->cabeza=cabeza;
@@ -205,3 +269,35 @@ void Lista::limpiarpantalla(){
     cin.get();
     system("cls");
 }
+
+/*void contarVocalesConsonantes(const string& texto) {
+    int vocales = 0;
+    int consonantes = 0;
+
+    for (char c : texto) {
+        // Convertimos a minúscula para no comparar A y a por separado
+        char letra = tolower(c);
+
+        // Verificamos si es una letra del alfabeto (ignora números y espacios)
+        if (isalpha(letra)) {
+            if (letra == 'a' || letra == 'e' || letra == 'i' || letra == 'o' || letra == 'u') {
+                vocales++;
+            } else {
+                consonantes++;
+            }
+        }
+    }
+
+    cout << "--- Analisis de Texto ---" << endl;
+    cout << "Vocales: " << vocales << endl;
+    cout << "Consonantes: " << consonantes << endl;
+}
+    
+bool validarNombreReal(const string& nombre) {
+    // Definimos el patron: Letras (incluye tildes y ñ) y espacios
+    // El + asegura que no este vacio
+    regex patron("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
+
+    // regex_match compara todo el string contra el patron
+    return regex_match(nombre, patron);
+}*/
