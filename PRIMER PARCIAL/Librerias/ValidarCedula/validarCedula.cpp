@@ -4,12 +4,13 @@
 using namespace std;
 
 bool validarCedula::validar(const char* cedula){
+    if(cedula==nullptr) return false;
     int longitud=0;
     while (*(cedula+longitud)!='\0'){
         longitud++;
     }
     
-    if(!validarExpresion::validarCedulanum(cedula)) return false;
+    if(!validarExpresion::validarCedulanum(cedula)){return false;}
 
     int provincia=(*(cedula+0)-'0')*10+(*(cedula+1)-'0');
     int tercer=*(cedula+2)-'0';
@@ -18,18 +19,15 @@ bool validarCedula::validar(const char* cedula){
     if (tercer>=6) return false;
 
     int suma=0;
+    //Aplicado el bit a bit
     for(int i=0;i<9;i++){
         int digito=*(cedula+i)-'0';
-        int coeficiente;
-        if(i % 2 == 0){
-            coeficiente = 2;
-        }else{
-            coeficiente = 1;
-        }
-        int producto=digito*coeficiente;
+        int coeficiente=(i & 1) ? 1:2;
+        int producto=(coeficiente==2) ? (digito<<1):digito;
         if (producto>9) producto -= 9;
         suma += producto;
     }
+    //Hasta aqui
 
     int verificadorReal=*(cedula + 9)-'0';
     int residuo=suma % 10;

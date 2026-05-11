@@ -1,8 +1,17 @@
 #include "Lista.h"
 #include "validarCedula.h"
+#include "validarExpresion.h"
 #include <iostream>
 #include <string>
 using namespace std;
+
+auto deseaContinuar = [](char respuesta) -> bool{
+    respuesta = tolower(respuesta);
+    if(respuesta=='y') return true;
+    if(respuesta=='n') return false;
+    cout<<"Operador invalido!\n Asumiendo salida por seguridad..."<<endl;
+    return false;
+};
 
 int main(){
     string cedula,nombre;
@@ -26,19 +35,19 @@ int main(){
             cout<<"Ingrese su nombre: ";
             cin.ignore();
             getline(cin,nombre);
-            miLista->insertar(cedula,nombre);
-            miLista->guardarArchivoIngreso(nombre,cedula);
-            cout<<"Desea agregar otro usuario? [Y/n]: ";
-            cin>>aux;
-            miLista->limpiarpantalla();
-            if(aux=='n' || aux=='N'){
-                continuar=false;
-            }else if(aux=='Y' || aux=='y'){
-                continuar=true;
-            }else{
-                cout<<"Operador invalido! Saliendo por seguridad..."<<endl;
-                return false;
+            if(validarExpresion::validarNombre(nombre)){
+                miLista->insertar(cedula,nombre);
+                miLista->guardarArchivoIngreso(nombre,cedula);
+                cout<<"Desea agregar otro usuario? [Y/n]: ";
+                cin>>aux;
+                continuar=deseaContinuar(aux);
+                if(!continuar && (tolower(aux)!='n')){
+                    return 1;
+                }
                 miLista->limpiarpantalla();
+            }else{
+                cout<<"El nombre ingresado es incorrecto!"<<endl;
+                cout<<"Intente ingresar otros datos!"<<endl;
             }
         }else{
             cout<<"La cedula ingresada no es valida!"<<endl;
@@ -46,35 +55,7 @@ int main(){
             miLista->limpiarpantalla();
             continue;
         }
-        
     }
-    do{
-        cout<<"Desea hacer otra operación?"<<endl;
-        cout<<"1. Modificar cedula/nombre"<<endl;
-        cout<<"2. Buscar usuario"<<endl;
-        cout<<"3. Eliminar usuario"<<endl;
-        cout<<"4. Salir"<<endl;
-        cout<<"Escoga una opcion: ";
-        cin>>op;
-        switch(op){
-            case 1:{
-                cout<<""<<endl;
-            };
-
-            case 2:{
-                cout<<""<<endl;
-            };
-
-            case 3:{
-                cout<<""<<endl;
-            };
-
-            case 4:{
-                cout<<""<<endl;
-            };
-            
-        }
-    }while(op!=4);
     cout<<"Registros en Memoria"<<endl;
     miLista->imprimir();
     cout<<"Empezando a contar cedulas por provincia!"<<endl;

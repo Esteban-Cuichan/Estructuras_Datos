@@ -1,4 +1,4 @@
-#include "C:\Users\Esteban\Documents\Documentos\PREGRADO SI-ABR26-AGO26\ESTRUCTURAS DE DATOS\PRIMER PARCIAL\Proyecto Primer Parcial\LibreriaValidar\validarCedula.h"
+#include "validarCedula.h"
 #include <iostream>
 using namespace std;
 

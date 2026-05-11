@@ -24,5 +24,8 @@ class Lista:public Operaciones{
         void limpiarpantalla();
         void guardarArchivoIngreso(string,string);
         bool busquedaDuplicado(string);
+        void modificar(string,string);
+        void eliminarUsuario(string);
+        string buscarUsuario(string);
 };
 #endif

@@ -184,46 +184,67 @@ bool Lista::busquedaDuplicado(string cedula){
 }
 
 void Lista::modificar(string cedula,string nombre){
+    ifstream archivo("usuarios.txt");
+    ofstream temporal("tempo.txt");
+    string cedarchivo,nomarchivo;
+    bool encontrado=false;
 
+    if(!archivo.is_open()){
+        cout<<"Error al abrir el archivo!"<<endl;
+        return;
+    }
+
+    while(getline(archivo,nomarchivo,',')){
+        if(getline(archivo,cedarchivo)){
+            cedarchivo=limpiarEspacios(cedarchivo);
+            if(cedarchivo==cedula){
+                temporal<<nombre<<","<<cedarchivo<<endl;
+            }else{
+                temporal<<nomarchivo<<","<<cedarchivo<<endl;
+            }
+        }
+        archivo.close();
+        temporal.close();
+        remove("usuarios.txt");
+        rename("tempo.txt","usuarios.txt");
+        if(encontrado){
+            cout<<"Usuario modificado correctamente!"<<endl;
+        }else{
+            cout<<"No se encontro la cedula a modificar!"<<endl;
+        }
+    }
 }
 
 void Lista::eliminarUsuario(string cedulaAEliminar){
     ifstream archivoOriginal("usuarios.txt");
-    ofstream archivoTemporal("temporal.txt"); // Archivo de paso
-    string nombreUs, cedulaUs;
-    bool encontrado = false;
+    ofstream archivoTemporal("temporal.txt");
+    string nombreUs,cedulaUs;
+    bool encontrado=false;
 
-    if (!archivoOriginal.is_open()) {
-        cout << "Error al abrir el archivo!" << endl;
+    if (!archivoOriginal.is_open()){
+        cout<<"Error al abrir el archivo!"<<endl;
         return;
     }
 
-    // Leemos el original linea por linea (formato: Nombre,Cedula)
-    while (getline(archivoOriginal, nombreUs, ',')) {
-        if (getline(archivoOriginal, cedulaUs)) {
-            // Limpieza de caracteres invisibles (\r)
-            if (!cedulaUs.empty() && cedulaUs.back() == '\r') cedulaUs.pop_back();
-
-            // Si la cedula NO es la que queremos borrar, la escribimos en el temporal
-            if (cedulaUs != cedulaAEliminar) {
-                archivoTemporal << nombreUs << "," << cedulaUs << endl;
-            } else {
-                encontrado = true; // La saltamos (la "borramos")
+    while (getline(archivoOriginal,nombreUs,',')) {
+        if (getline(archivoOriginal,cedulaUs)) {
+            cedulaUs=limpiarEspacios(cedulaUs);
+            if(cedulaUs!=cedulaAEliminar) {
+                archivoTemporal<<nombreUs<<","<<cedulaUs<<endl;
+            }else{
+                encontrado=true;
             }
         }
     }
 
     archivoOriginal.close();
     archivoTemporal.close();
-
-    // Reemplazamos el archivo viejo por el nuevo
-    remove("usuarios.txt");             // Borra el original
-    rename("temporal.txt", "usuarios.txt"); // Renombra el temporal
-
-    if (encontrado) {
-        cout << "Usuario con cedula " << cedulaAEliminar << " eliminado del archivo." << endl;
-    } else {
-        cout << "No se encontro la cedula en el archivo." << endl;
+    remove("usuarios.txt");
+    rename("temporal.txt", "usuarios.txt");
+    if(encontrado) {
+        cout<<"Usuario con cedula"<<cedulaAEliminar<<" eliminado del archivo."<< endl;
+    }else{
+        cout<<"No se encontro la cedula en el archivo."<<endl;
     }
 }
 
@@ -270,34 +291,3 @@ void Lista::limpiarpantalla(){
     system("cls");
 }
 
-/*void contarVocalesConsonantes(const string& texto) {
-    int vocales = 0;
-    int consonantes = 0;
-
-    for (char c : texto) {
-        // Convertimos a minúscula para no comparar A y a por separado
-        char letra = tolower(c);
-
-        // Verificamos si es una letra del alfabeto (ignora números y espacios)
-        if (isalpha(letra)) {
-            if (letra == 'a' || letra == 'e' || letra == 'i' || letra == 'o' || letra == 'u') {
-                vocales++;
-            } else {
-                consonantes++;
-            }
-        }
-    }
-
-    cout << "--- Analisis de Texto ---" << endl;
-    cout << "Vocales: " << vocales << endl;
-    cout << "Consonantes: " << consonantes << endl;
-}
-    
-bool validarNombreReal(const string& nombre) {
-    // Definimos el patron: Letras (incluye tildes y ñ) y espacios
-    // El + asegura que no este vacio
-    regex patron("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$");
-
-    // regex_match compara todo el string contra el patron
-    return regex_match(nombre, patron);
-}*/

@@ -15,5 +15,8 @@ class Operaciones{
         virtual void limpiarpantalla()=0;
         virtual void guardarArchivoIngreso(string,string)=0;
         virtual bool busquedaDuplicado(string)=0;
+        virtual void modificar(string,string)=0;
+        virtual void eliminarUsuario(string)=0;
+        virtual string buscarUsuario(string)=0;
 };
 #endif
