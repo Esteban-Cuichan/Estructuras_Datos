@@ -4,7 +4,7 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{69FB485E-A1AD-46E2-9C15-A1A44FEA3629}" Name="ObjectOrientedModel_1" Selected="Yes" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="ObjectOrientedModel_1.oom"/>
+		<Model Expanded="Yes" ID="{E750A99A-3B84-4B31-90FC-7B67A4EB3C3F}" Name="Modelado_Proyec1_Estructuras" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="Modelado_Proyec1_Estructuras/Modelado_Proyec1_Estructuras.prj"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>
