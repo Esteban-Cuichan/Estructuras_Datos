@@ -7,15 +7,18 @@ class Nodo{
     private:
         string cedula;
         string nombre;
+        string apellido;
         Nodo* siguiente;
     public:
         void setCedula(string);
         void setNombre(string);
+        void setApellido(string);
         void setSiguiente(Nodo*);
         string getCedula();
         string getNombre();
+        string getApellido();
         Nodo* getSiguiente();
-        Nodo(string,string,Nodo*);
+        Nodo(string,string,Nodo*,string);
         Nodo();
         ~Nodo() {};
 };

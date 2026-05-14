@@ -14,7 +14,7 @@ class Lista:public Operaciones{
         void setCola(Nodo*);
         Nodo* getCabeza();
         Nodo* getCola();
-        void insertar(string,string);
+        void insertar(string,string,string);
         void imprimir();
         Nodo* buscar(string);
         void eliminar(string);
@@ -22,10 +22,13 @@ class Lista:public Operaciones{
         string buscarProvincia(string);
         void conteoGeneral();
         void limpiarpantalla();
-        void guardarArchivoIngreso(string,string);
+        void guardarArchivoIngreso(string,string,string);
         bool busquedaDuplicado(string);
         void modificar(string,string);
         void eliminarUsuario(string);
         string buscarUsuario(string);
+        void eliminarDigito();
+        void mostrarArchivo();
+        string correoExis(string);
 };
 #endif

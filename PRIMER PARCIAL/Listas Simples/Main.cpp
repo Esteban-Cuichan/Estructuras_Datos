@@ -14,7 +14,7 @@ auto deseaContinuar = [](char respuesta) -> bool{
 };
 
 int main(){
-    string cedula,nombre;
+    string cedula,nombre,apellido;
     const char* charcedula;
     char aux;
     bool continuar=true;
@@ -36,15 +36,23 @@ int main(){
             cin.ignore();
             getline(cin,nombre);
             if(validarExpresion::validarNombre(nombre)){
-                miLista->insertar(cedula,nombre);
-                miLista->guardarArchivoIngreso(nombre,cedula);
-                cout<<"Desea agregar otro usuario? [Y/n]: ";
-                cin>>aux;
-                continuar=deseaContinuar(aux);
-                if(!continuar && (tolower(aux)!='n')){
-                    return 1;
+                cout<<"Ingrese su apellido: ";
+                cin.ignore();
+                getline(cin,apellido);
+                if(validarExpresion::validarNombre(apellido)){
+                    miLista->insertar(cedula,nombre,apellido);
+                    miLista->guardarArchivoIngreso(nombre,cedula,apellido);
+                    cout<<"Desea agregar otro usuario? [Y/n]: ";
+                    cin>>aux;
+                    continuar=deseaContinuar(aux);
+                    if(!continuar && (tolower(aux)!='n')){
+                        return 1;
+                    }
+                    miLista->limpiarpantalla();
+                }else{
+                    cout<<"El apellido ingresado es incorrecto!"<<endl;
+                    cout<<"Intente ingresar otros datos!"<<endl;
                 }
-                miLista->limpiarpantalla();
             }else{
                 cout<<"El nombre ingresado es incorrecto!"<<endl;
                 cout<<"Intente ingresar otros datos!"<<endl;
@@ -58,8 +66,10 @@ int main(){
     }
     cout<<"Registros en Memoria"<<endl;
     miLista->imprimir();
-    cout<<"Empezando a contar cedulas por provincia!"<<endl;
+    /*cout<<"Empezando a contar cedulas por provincia!"<<endl;
     miLista->conteoGeneral();
+    cout<<"Eliminacion de digitos impares :)"<<endl;
+    miLista->eliminarDigito();*/
     delete miLista;
     return 0;
 }

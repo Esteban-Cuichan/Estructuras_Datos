@@ -4,9 +4,15 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <functional>
 //include <regex>
 //#include <cctype>
 using namespace std;
+
+Lista::Lista(){
+    this->cabeza=nullptr;
+    this->cola=nullptr;
+}
 
 string limpiarEspacios(string str){
     if(!str.empty()&&(str.back()=='\r' || str.back()=='\n')){
@@ -15,19 +21,45 @@ string limpiarEspacios(string str){
     return str;
 }
 
-Lista::Lista(){
-    this->cabeza=nullptr;
-    this->cola=nullptr;
-}
+auto elimDigito = [] (const char* cedula){
+    int i;
+    for(i=0;i<9;i++){
+        int digito=*(cedula+i)-'0';
+        if(!(digito & 1)){
+            cout<<digito;
+        }
+    }
+};
 
-void Lista::insertar(string cedula,string nombre){
-    Nodo* nuevo=new Nodo(cedula,nombre,nullptr);
+
+
+void Lista::insertar(string cedula,string nombre,string apellido){
+    Nodo* nuevo=new Nodo(cedula,nombre,nullptr,apellido);
     if(cabeza==nullptr){
         cabeza=nuevo;
         cola=nuevo;
     }else{
         nuevo->setSiguiente(cabeza);
         cabeza=nuevo;
+    }
+}
+
+string Lista::correoExis(string correo){
+    ifstream archivo("usuarios.txt");
+    string nombre,apellido,correoArc,cedula;
+    if(!archivo.is_open()){
+        cout<<"No se ha encontrado el archivo"<<endl;
+    }
+    while(getline(archivo,nombre,',')){
+        if(getline(archivo,apellido,',')){
+            if(getline(archivo,cedula,',')){
+                if(getline(archivo,correoArc)){
+                    if(correoArc==correo){
+
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -151,10 +183,22 @@ void Lista::conteoGeneral(){
     archivo.close();
 }
 
-void Lista::guardarArchivoIngreso(string nombre,string cedula){
+void Lista::guardarArchivoIngreso(string nombre,string cedula,string apellido){
+    function<string(const char*)> obtenerApellido = [&](const char* c)->string{
+        if(*c=='\0') return "";
+        return string(1,*c)+obtenerApellido(c+1);
+    };
+
+    auto genCorreo = [&] (string nombre, string apellido)->string{
+        if(nombre.empty() || apellido.empty()) return "";
+        string dominio="@gotitasdelsaber.edu.ec";
+        return nombre.front()+obtenerApellido(apellido.c_str())+dominio;
+    };
+    
     ofstream archivo("usuarios.txt",ios::app);
+    string correo=genCorreo(nombre,apellido);
     if(archivo.is_open()){
-        archivo<<nombre<<","<<cedula<<endl;
+        archivo<<nombre<<","<<apellido<<","<<cedula<<","<<correo<<endl;
         archivo.close();
         cout<<"Agregado correctamente al archivo.txt"<<endl;
     }else{
@@ -268,6 +312,27 @@ string Lista::buscarUsuario(string cedula){
     return "Usuario no encontrado!";
 }
 
+void Lista::mostrarArchivo(){
+    ifstream archivo("usuarios.txt");
+    string nombre,apellido,correo,cedula;
+    if(!archivo.is_open()){
+        cout<<"No se ha encontrado el archivo!"<<endl;
+        return;
+    }
+    cout<<"======= REGISTROS ======="<<endl;
+    while(getline(archivo,nombre,',')){
+        if(getline(archivo,apellido,',')){
+            if(getline(archivo,cedula,',')){
+                if(getline(archivo,correo)){
+                    cout<<"Nombre: "<<nombre<<" "<<apellido<<" |Cedula: "<<cedula<<" |Correo: "<<correo<<endl;
+                }
+            }
+        }
+    }
+    archivo.close();
+    return;
+}
+
 void Lista::setCabeza(Nodo* cabeza){
     this->cabeza=cabeza;
 }
@@ -289,5 +354,25 @@ void Lista::limpiarpantalla(){
     cin.ignore();
     cin.get();
     system("cls");
+}
+
+void Lista::eliminarDigito(){
+    ifstream archivo("usuarios.txt");
+    const char* cedula;
+    string cedulaArchivo,nombreArchivo;
+    if(!archivo.is_open()){
+        cout<<"No se ha podido abrir el archivo mencionado!"<<endl;
+        return;
+    }
+
+    while(getline(archivo,nombreArchivo,',')){
+        if(getline(archivo,cedulaArchivo)){
+            cedulaArchivo=limpiarEspacios(cedulaArchivo);
+            cedula=cedulaArchivo.c_str();
+            cout<<"\nLa cedula: "<<cedulaArchivo<<" eliminando los digitos impares queda asi: ";
+            elimDigito(cedula);
+        }
+    }
+    archivo.close();
 }
 
