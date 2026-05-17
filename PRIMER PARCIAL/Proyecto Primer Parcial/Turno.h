@@ -14,6 +14,7 @@ private:
     Turno* anterior;
 
 public:
+    Turno();
     Turno(Persona,Vehiculo,Fecha,int,bool);
     Persona getUsuario();
     Vehiculo getVehiculo();

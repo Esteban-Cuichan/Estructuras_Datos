@@ -1,5 +1,12 @@
 #include "Turno.h"
 
+Turno::Turno(){
+    this->id_turno=0;
+    this->estado=false;
+    this->siguiente=nullptr;
+    this->anterior=nullptr;
+}
+
 Turno::Turno(Persona u,Vehiculo v,Fecha f,int id,bool est) {
     usuario = u;
     vehiculo = v;

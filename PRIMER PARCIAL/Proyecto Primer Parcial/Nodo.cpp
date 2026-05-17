@@ -18,9 +18,9 @@ Nodo* Nodo::getAnterior(){
     return anterior;
 }
 
-/*Turno Nodo::getTurno(){
+Turno* Nodo::getTurno(){
     return turno;
-}*/
+}
 
 void Nodo::setSiguiente(Nodo* siguiente){
     this->siguiente=siguiente;
@@ -30,6 +30,6 @@ void Nodo::setAnterior(Nodo* anterior){
     this->anterior=anterior;
 }
 
-/*void Nodo::setTurno(Turno turno){
-    this.turno=turno;
-}*/
+void Nodo::setTurno(Turno* turno){
+    this->turno=turno;
+}

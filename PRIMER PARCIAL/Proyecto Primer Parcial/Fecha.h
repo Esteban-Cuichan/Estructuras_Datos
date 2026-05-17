@@ -32,5 +32,7 @@ class Fecha{
         string mesString(int);
         string Feriado(int,int,int);
         string validarFechaYObtenerFeriado(int,int,int);
+        string fechaFormateada();
+        bool esHorarioLaboral();
 };
 #endif

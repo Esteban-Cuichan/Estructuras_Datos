@@ -1,6 +1,7 @@
 #ifndef LISTADCE_H
 #define LISTADCE_H
 #include "Nodo.h"
+#include <iostream>
 using namespace std;
 
 class ListaDCE{
@@ -15,9 +16,11 @@ class ListaDCE{
         Nodo* getCola();
         void setCabeza(Nodo*);
         void setCola(Nodo*);
-        /*insertar(Turno);
-        eliminar(int);
-        buscar(int);
-        modificar(int)*/
+        void insertar(Turno*);
+        bool eliminarPorFecha(int,int,int);
+        Nodo* buscarPorFecha(int,int,int);
+        bool modificar(int,int,int,Fecha);
+        void mostrarLista();
+        void guardarListaEnArchivo();
 };
 #endif

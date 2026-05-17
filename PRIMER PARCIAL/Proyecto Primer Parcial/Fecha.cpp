@@ -235,6 +235,22 @@ string Fecha::validarFechaYObtenerFeriado(int dia,int mes,int year){
             }
         }
     }
-
     return "DISPONIBLE";
+}
+
+string Fecha::fechaFormateada(){
+    string minStr=(minutos<10) ? "0" + to_string(minutos) : to_string(minutos);
+    string horaStr=(hora<10) ? "0" + to_string(hora) : to_string(hora); 
+    string fechaCompleta=calcularDiaSemana()+", "+
+                        to_string(dia)+" de "+
+                        mesString(mes)+" de "+
+                        to_string(year)+" a las "+
+                        horaStr+":"+minStr;
+    return fechaCompleta;
+}
+
+bool Fecha::esHorarioLaboral(){
+    if(hora<8 || hora>16){return false;}
+    if(hora==16 && minutos>30){return false;}
+    return true;
 }
