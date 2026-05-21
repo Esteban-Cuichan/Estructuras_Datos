@@ -75,6 +75,7 @@ string Fecha::calcularDiaSemana(){
         }
     }
     archivo.close();
+    return "ErroDia";
 }
 
 bool Fecha::esBisiesto(int year){

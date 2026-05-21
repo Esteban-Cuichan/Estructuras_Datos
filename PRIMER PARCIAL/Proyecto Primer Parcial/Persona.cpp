@@ -36,10 +36,6 @@ string Persona::getCorreo(){
     return correo;
 }
 
-string Persona::getTelefono(){
-    return telefono;
-}
-
 void Persona::setApellido(string apellido){
     this->apellido=apellido;
 }

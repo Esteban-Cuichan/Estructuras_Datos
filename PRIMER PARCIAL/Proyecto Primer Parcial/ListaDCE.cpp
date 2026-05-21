@@ -1,9 +1,20 @@
-#include "ListaDCE.h"
+#ifndef NOMINMAX
+    #define NOMINMAX
+#endif
+#define _RPCNDR_H_
+#define DONOT_DEFINE_BYTE
+#include <windows.h>
+#include <iostream>
 #include <fstream>
+#include <sstream>
+#include <string>
+#include "ListaDCE.h"
+using namespace std;
 
 ListaDCE::ListaDCE(){
     this->cabeza=nullptr;
     this->cola=nullptr;
+    cargarListaDesdeArchivo();
 }
 
 ListaDCE::~ListaDCE(){
@@ -45,6 +56,7 @@ void ListaDCE::setCola(Nodo*){
 void ListaDCE::insertar(Turno* nuevoTurno){
     if(nuevoTurno==nullptr) return;
     Fecha fechaNueva=nuevoTurno->getFecha();
+    string placaNueva=nuevoTurno->getVehiculo().getPlaca();
     if(!fechaNueva.esHorarioLaboral()){
         cout<<"Error: El horario ingresado ("
         <<fechaNueva.getHora()<<":"<<fechaNueva.getMinutos()
@@ -57,6 +69,11 @@ void ListaDCE::insertar(Turno* nuevoTurno){
         do{
             Turno* t=actual->getTurno();
             if(t!=nullptr){
+                if(t->getVehiculo().getPlaca()==placaNueva){
+                    cout<<"Error: El vehiculo con placa: "<<placaNueva<<" ya tiene un turno asignado en el sistema!"<<endl;
+                    delete nuevoTurno;
+                    return;
+                }
                 Fecha fechaExistente=t->getFecha();
                 if(fechaExistente.getYear() == fechaNueva.getYear() &&
                     fechaExistente.getMes() == fechaNueva.getMes() &&
@@ -90,24 +107,28 @@ void ListaDCE::insertar(Turno* nuevoTurno){
     cout<<"Turno agendado correctamente!"<<endl;
 }
 
-Nodo* ListaDCE::buscarPorFecha(int dia,int mes,int year){
+Nodo* ListaDCE::buscarPorID(int idBuscado){
     if(cabeza==nullptr) return nullptr;
     Nodo* actual=cabeza;
     do{
         Turno* t=actual->getTurno();
-        Fecha f=t->getFecha();
-        if(f.getDia()==dia && f.getMes()==mes && f.getYear()==year){
+        if(t!=nullptr && t->getIDturno()==idBuscado){
             return actual;
         }
         actual=actual->getSiguiente();
-    }while(actual!=cabeza);
+    }while(actual!=cabeza && actual!=nullptr);
     return nullptr;
 }
 
-bool ListaDCE::modificar(int dia, int mes, int year,Fecha nuevaFecha){
-    Nodo* nodoEncontrado=buscarPorFecha(dia,mes,year);
+bool ListaDCE::modificar(int idBuscado,Fecha nuevaFecha){
+    Nodo* nodoEncontrado=buscarPorID(idBuscado);
     if(nodoEncontrado==nullptr){
-        cout<<"No existe ningun turno registrado el: "<<dia<<" / "<<mes<<" / "<<year<<endl;
+        cout<<"No existe ningun turno con el ID: "<<idBuscado<<endl;
+        return false;
+    }
+    string resultadoFeriado=nuevaFecha.validarFechaYObtenerFeriado(nuevaFecha.getDia(),nuevaFecha.getMes(),nuevaFecha.getYear());
+    if(resultadoFeriado!="DISPONIBLE"){
+        cout<<"Erro: No se puede reprogramar. Motivo: "<<resultadoFeriado<<endl;
         return false;
     }
     if(!nuevaFecha.esHorarioLaboral()){
@@ -119,33 +140,35 @@ bool ListaDCE::modificar(int dia, int mes, int year,Fecha nuevaFecha){
     if(cabeza!=nullptr) {
         Nodo* actual=cabeza;
         do{
-            Turno* t=actual->getTurno();
-            if(t!=nullptr){
-                Fecha fechaExistente=t->getFecha();
-                if(fechaExistente.getYear() == nuevaFecha.getYear() &&
-                    fechaExistente.getMes() == nuevaFecha.getMes() &&
-                    fechaExistente.getDia() == nuevaFecha.getDia() &&
-                    fechaExistente.getHora() == nuevaFecha.getHora() &&
-                    fechaExistente.getMinutos() == nuevaFecha.getMinutos()){
-                        cout<<"Error: Ya existe un turno agentado para el "
-                        <<nuevaFecha.fechaFormateada()<<". Intente con otra hora."<<endl;
-                        return false;
-                    }
+            if(actual!=nodoEncontrado){
+                Turno* t=actual->getTurno();
+                if(t!=nullptr){
+                    Fecha fechaExistente=t->getFecha();
+                    if(fechaExistente.getYear() == nuevaFecha.getYear() &&
+                        fechaExistente.getMes() == nuevaFecha.getMes() &&
+                        fechaExistente.getDia() == nuevaFecha.getDia() &&
+                        fechaExistente.getHora() == nuevaFecha.getHora() &&
+                        fechaExistente.getMinutos() == nuevaFecha.getMinutos()){
+                            cout<<"Error: Ya existe un turno agentado para el "
+                            <<nuevaFecha.fechaFormateada()<<". Intente con otra hora."<<endl;
+                            return false;
+                        }
+                }
             }
             actual=actual->getSiguiente();
         }while(actual!=cabeza);
     }
     nodoEncontrado->getTurno()->setFecha(nuevaFecha);
     guardarListaEnArchivo();
-    cout<<"El turno ha sido modificado correctamente a la fecha: "<<nuevaFecha.fechaFormateada()<<endl;
+    cout<<"El turno ID  "<<idBuscado<<" ha saido modificado correctamente a la fecha: "<<nuevaFecha.fechaFormateada()<<endl;
     return true;
 }
 
-bool ListaDCE::eliminarPorFecha(int dia,int mes,int year){
+bool ListaDCE::eliminarPorID(int idBuscado){
     if(cabeza==nullptr) return false;
-    Nodo* nodoEliminar=buscarPorFecha(dia,mes,year);
+    Nodo* nodoEliminar=buscarPorID(idBuscado);
     if(nodoEliminar==nullptr){
-        cout<<"No se puede eliminar: No se encontro un turno con esa fecha!"<<endl;
+        cout<<"No se puede eliminar: No se encontro el ID: "<<idBuscado<<endl;
         return false;
     }
 
@@ -165,25 +188,34 @@ bool ListaDCE::eliminarPorFecha(int dia,int mes,int year){
     }
     delete nodoEliminar;
     guardarListaEnArchivo();
-    cout<<"Turno cancelado y eliminado del sistema."<<endl;
+    cout<<"Turno ID: "<<idBuscado<<" eliminado correctamente!"<<endl;
     return true;
 }
 
 void ListaDCE::mostrarLista(){
+    SetConsoleOutputCP(CP_UTF8);
     if(cabeza==nullptr){
-        cout<<"No hay turnos registrados en el sistema!"<<endl;
+        cout<<"\n[INFO] No hay turnos registrados en el sistema!"<<endl;
         return;
     }
     Nodo* actual=cabeza;
-    cout<<"\n======== TURNOS REGISTRADOS ========"<<endl;
+    cout << "\n=====================================================================" << endl;
+    cout << "                     LISTADO DE TURNOS REGISTRADOS                   " << endl;
+    cout << "=====================================================================" << endl;
     do{
         Turno* t=actual->getTurno();
-        cout<<"ID: "<<t->getIDturno()
-        <<" | Fecha: "<<t->getFecha().getDia()<<"/"<<t->getFecha().getMes()
-        <<" | Placa: "<<t->getVehiculo().getPlaca()<<endl;
+        if(t!=nullptr){
+            Persona p=t->getUsuario();
+            Fecha f=t->getFecha();
+            cout << "  ID TURNO : " << t->getIDturno() << " | Estado: " << (t->getEstado() ? "Activo" : "Cancelado") << endl;
+            cout << "  DUEÑO    : " << p.getNombre() << " " << p.getApellido() << " (C.I: " << p.getCI() << ")" << endl;
+            cout << "  CONTACTO : Tel: " << p.getTelefono() << " | Correo: " << p.getCorreo() << endl;
+            cout << "  FECHA    : "<<f.fechaFormateada()<<endl;
+            cout << "---------------------------------------------------------------------" << endl;
+        }
         actual=actual->getSiguiente();
     }while(actual!=cabeza);
-    cout<<"=====================================\n"<<endl;
+    cout << "=====================================================================\n" << endl;
 }
 
 void ListaDCE::guardarListaEnArchivo() {
@@ -195,14 +227,107 @@ void ListaDCE::guardarListaEnArchivo() {
         do {
             Turno* t = actual->getTurno();
             archivoOut << t->getIDturno() << ","
+                       << t->getUsuario().getNombre() << ","
+                       << t->getUsuario().getApellido() << ","
                        << t->getUsuario().getCI() << ","
+                       << t->getUsuario().getTelefono() << ","
+                       << t->getUsuario().getCorreo() << ","
                        << t->getVehiculo().getPlaca() << ","
+                       << t->getVehiculo().getColor() << ","
+                       << t->getVehiculo().getAnio() << ","
                        << t->getFecha().getDia() << ","
                        << t->getFecha().getMes() << ","
                        << t->getFecha().getYear() << ","
+                       << t->getFecha().getHora() << ","
+                       << t->getFecha().getMinutos() << ","
                        << t->getEstado() << "\n";
             actual = actual->getSiguiente();
         } while (actual != cabeza);
     }
     archivoOut.close();
+}
+
+int ListaDCE::generarSiguienteID(){
+    if(cabeza==nullptr){
+        return 1001;
+    }
+    int idMaximo=1001;
+    Nodo* actual=cabeza;
+    do{
+        Turno* t=actual->getTurno();
+        if(t!=nullptr && t->getIDturno() > idMaximo){
+            idMaximo=t->getIDturno();
+        }
+        actual=actual->getSiguiente();
+    }while(actual!=cabeza);
+    return idMaximo + 1;
+}
+
+void ListaDCE::cargarListaDesdeArchivo(){
+    ifstream archivo("turnos.txt");
+    if(!archivo.is_open()){
+        return;
+    }
+    string linea;
+    while(getline(archivo,linea)){
+        if(linea.empty()) continue;
+        stringstream ss(linea);
+        string idStr,nombre,apellido,ci,correo,telefono;
+        string placa,color,anioVehiculoStr;
+        string diaStr,mesStr,anioFechaStr,horaStr,minStr,estadoStr;
+        getline(ss, idStr, ',');
+        getline(ss, ci, ',');
+        getline(ss, nombre, ',');
+        getline(ss, apellido, ',');
+        getline(ss, telefono, ',');
+        getline(ss, correo, ',');
+        getline(ss, placa, ',');
+        getline(ss, color, ',');
+        getline(ss, anioVehiculoStr, ',');
+        getline(ss, diaStr, ',');
+        getline(ss, mesStr, ',');
+        getline(ss, anioFechaStr, ',');
+        getline(ss, horaStr, ',');
+        getline(ss, minStr, ',');
+        getline(ss, estadoStr, '\n');
+        try{
+            if(idStr.empty() || diaStr.empty() || mesStr.empty() || anioFechaStr.empty()){
+                continue;
+            }
+            int id=stoi(idStr);
+            int anioV=stoi(anioVehiculoStr);
+            int d=stoi(diaStr);
+            int m=stoi(mesStr);
+            int a=stoi(anioFechaStr);
+            int hh=stoi(horaStr);
+            int mm=stoi(minStr);
+            bool est = (estadoStr == "1");
+            Persona prop(nombre, apellido, ci, telefono, correo);
+            Vehiculo car(color, placa,stoi(anioVehiculoStr));
+            Fecha fec;
+            fec.setDia(d);
+            fec.setMes(m);
+            fec.setYear(a);
+            fec.setHora(hh);
+            fec.setMinutos(mm);
+            Turno* turnoCargado=new Turno(prop,car,fec,id,est);
+            Nodo* nuevoNodo=new Nodo();
+            nuevoNodo->setTurno(turnoCargado);
+            if(cabeza == nullptr){
+                cabeza = nuevoNodo;
+                cola = nuevoNodo;
+                cabeza->setSiguiente(cabeza);
+                cabeza->setAnterior(cabeza);
+            }else{
+                cola->setSiguiente(nuevoNodo);
+                nuevoNodo->setAnterior(cola);
+                nuevoNodo->setSiguiente(cabeza);
+                cabeza->setAnterior(nuevoNodo);
+                cola = nuevoNodo;
+            }
+        }catch(const invalid_argument& e){
+            continue;
+        }
+    }
+    archivo.close();
 }

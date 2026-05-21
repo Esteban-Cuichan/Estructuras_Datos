@@ -11,16 +11,18 @@ class ListaDCE{
     public:
         ListaDCE();
         ListaDCE(Nodo*,Nodo*);
-        ~ListaDCE(){}
+        ~ListaDCE();
         Nodo* getCabeza();
         Nodo* getCola();
         void setCabeza(Nodo*);
         void setCola(Nodo*);
         void insertar(Turno*);
-        bool eliminarPorFecha(int,int,int);
-        Nodo* buscarPorFecha(int,int,int);
-        bool modificar(int,int,int,Fecha);
+        bool eliminarPorID(int);
+        Nodo* buscarPorID(int);
+        bool modificar(int,Fecha);
         void mostrarLista();
         void guardarListaEnArchivo();
+        int generarSiguienteID();
+        void cargarListaDesdeArchivo();
 };
 #endif
