@@ -1,6 +1,6 @@
 #include "Lista.h"
-#include "validarCedula.h"
-#include "validarExpresion.h"
+#include "../PRIMER PARCIAL/Librerias/ValidarCedula/validarCedula.h"
+#include "../PRIMER PARCIAL/Librerias/validarExpresion/validarExpresion.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -37,7 +37,6 @@ int main(){
             getline(cin,nombre);
             if(validarExpresion::validarNombre(nombre)){
                 cout<<"Ingrese su apellido: ";
-                cin.ignore();
                 getline(cin,apellido);
                 if(validarExpresion::validarNombre(apellido)){
                     miLista->insertar(cedula,nombre,apellido);
@@ -66,10 +65,12 @@ int main(){
     }
     cout<<"Registros en Memoria"<<endl;
     miLista->imprimir();
+    miLista->ordenamientoburbuja();
+    miLista->imprimir();
+    delete miLista;
+    return 0;
     /*cout<<"Empezando a contar cedulas por provincia!"<<endl;
     miLista->conteoGeneral();
     cout<<"Eliminacion de digitos impares :)"<<endl;
     miLista->eliminarDigito();*/
-    delete miLista;
-    return 0;
 }

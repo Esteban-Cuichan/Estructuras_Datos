@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <functional>
+#include <thread>
+#include <chrono>
 using namespace std;
 
 Lista::Lista(){
@@ -40,7 +42,7 @@ void Lista::insertar(string cedula,string nombre,string apellido){
     }
 }
 
-string Lista::correoExis(string correo){
+/*string Lista::correoExis(string correo){
     ifstream archivo("usuarios.txt");
     string nombre,apellido,correoArc,cedula;
     if(!archivo.is_open()){
@@ -57,19 +59,29 @@ string Lista::correoExis(string correo){
             }
         }
     }
-}
+}*/
 
 void Lista::imprimir(){
     if(cabeza==nullptr){
-        cout<<"No se ha podido encontrar ningun dato ingresado!"<<endl;
-        cout<<"LISTA VACÍA!"<<endl;
+        cout<<"============================================="<<endl;
+        cout<<" |  No se encontro ningun dato ingresado!   |"<<endl;
+        cout<<" |              LISTA VACIA                |"<<endl;
+        cout<<"============================================="<<endl;
     }else{
         Nodo* aux=cabeza;
-        cout<<"Lista de registros:"<<endl;
+        int contador=1;
+        cout<<"=========================================================================="<<endl;
+        cout<<"                       LISTA DE REGISTROS EN MEMORIA                      "<<endl;
+        cout<<"=========================================================================="<<endl;
+        printf(" | %-4s | %-12s | %-35s |\n","No.","CEDULA","NOMBRE Y APELLIDO");
+        cout<<"--------------------------------------------------------------------------"<<endl;
         while(aux!=nullptr){
-            cout<<"Cedula: "<<aux->getCedula()<<"| Nombre: "<<aux->getNombre()<<endl;
+            string nombreCompleto=aux->getNombre()+" "+aux->getApellido();
+            printf(" | %-4d | %-12s | %-35s |\n",contador,aux->getCedula().c_str(),nombreCompleto.c_str());
             aux=aux->getSiguiente();
+            contador++;
         }
+        cout<<"=========================================================================="<<endl;
     }
 }
 
@@ -372,3 +384,44 @@ void Lista::eliminarDigito(){
     archivo.close();
 }
 
+void Lista::ordenamientoburbuja(){
+    if(cabeza==nullptr||cabeza->getSiguiente()==nullptr){
+        return; 
+    }
+    bool intercambiado;
+    Nodo* actual;
+    Nodo* ultimoLeido=nullptr;
+    int paso=1;
+    do{
+        intercambiado=false;
+        actual=cabeza;
+        while(actual->getSiguiente()!=ultimoLeido){
+            if(actual->getApellido()>actual->getSiguiente()->getApellido()){
+                string tempCedula=actual->getCedula();
+                string tempNombre=actual->getNombre();
+                string tempApellido=actual->getApellido();
+                actual->setCedula(actual->getSiguiente()->getCedula());
+                actual->setNombre(actual->getSiguiente()->getNombre());
+                actual->setApellido(actual->getSiguiente()->getApellido());
+                actual->getSiguiente()->setCedula(tempCedula);
+                actual->getSiguiente()->setNombre(tempNombre);
+                actual->getSiguiente()->setApellido(tempApellido);
+                intercambiado=true;
+                system("cls");
+                cout<<"=========================================================================="<<endl;
+                cout<<"               ANIMACION EN VIVO: PASO DE ORDENAMIENTO #"<<paso<<endl;
+                cout<<"=========================================================================="<<endl;
+                imprimir();
+                paso++;
+                std::this_thread::sleep_for(std::chrono::milliseconds(800));
+            }
+            actual=actual->getSiguiente();
+        }
+        ultimoLeido=actual;
+    }while(intercambiado);
+    system("cls");
+    cout<<"=========================================================================="<<endl;
+    cout<<"                    LISTA ORDENADA COMPLETAMENTE                          "<<endl;
+    cout<<"=========================================================================="<<endl;
+    imprimir();
+}

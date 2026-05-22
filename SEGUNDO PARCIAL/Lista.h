@@ -30,5 +30,6 @@ class Lista:public Operaciones{
         void eliminarDigito();
         void mostrarArchivo();
         string correoExis(string);
+        void ordenamientoburbuja();
 };
 #endif
