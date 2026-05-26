@@ -413,7 +413,7 @@ void Lista::ordenamientoburbuja(){
                 cout<<"=========================================================================="<<endl;
                 imprimir();
                 paso++;
-                std::this_thread::sleep_for(std::chrono::milliseconds(800));
+                this_thread::sleep_for(chrono::milliseconds(800));
             }
             actual=actual->getSiguiente();
         }

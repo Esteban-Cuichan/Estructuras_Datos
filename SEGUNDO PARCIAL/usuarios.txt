@@ -1,11 +1,4 @@
-Marlene,Vales,1713207395,MVales@gotitasdelsaber.edu.ec
-Juan,Quichimbo,1709857039,JQuichimbo@gotitasdelsaber.edu.ec
-Anabelle,Campues,1728973049,ACampues@gotitasdelsaber.edu.ec
-Carlos,Zambonino,1710472489,CZambonino@gotitasdelsaber.edu.ec
-Diana,Beltran,1715362545,DBeltran@gotitasdelsaber.edu.ec
-Esteban,Mendoza,1722839469,EMendoza@gotitasdelsaber.edu.ec
 Esteban,Cuichan,1755377635,ECuichan@gotitasdelsaber.edu.ec
-Gabriela,Cevallos,1716543101,GCevallos@gotitasdelsaber.edu.ec
-Ricardo,Ibarra,1712456381,RIbarra@gotitasdelsaber.edu.ec
-Ximena,Fuentes,1724275738,XFuentes@gotitasdelsaber.edu.ec
-Fausto,Urbina,1710034065,FUrbina@gotitasdelsaber.edu.ec
+Marlene,Males,1713207395,MMales@gotitasdelsaber.edu.ec
+Juan,Ligna,1709857039,JLigna@gotitasdelsaber.edu.ec
+Anabelle,Campues,1728973049,ACampues@gotitasdelsaber.edu.ec
