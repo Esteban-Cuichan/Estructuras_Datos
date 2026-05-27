@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulación de Interfaz Integrada</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Contenedor principal dividido */
+    .container {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Sección Izquierda: Carrusel con efectos interactivos */
+    .left-panel {
+      flex: 2;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background-color: #000;
+    }
+
+    .slider-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    /* Capa oscura que reacciona al pasar el mouse (Hover) */
+    .left-panel .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 2;
+      transition: background-color 0.4s ease;
+    }
+
+    .left-panel:hover .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    /* Contenedor de Textos y Líneas Decorativas */
+    .interactive-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 5% 8% 5%;
+      z-index: 3;
+      color: #ffffff;
+      opacity: 0.85;
+      transition: opacity 0.4s ease;
+    }
+
+    .left-panel:hover .interactive-content {
+      opacity: 1;
+    }
+
+    /* Líneas blancas decorativas angulares (Bordes izquierdos) */
+    .decor-border-left {
+      position: absolute;
+      left: 20px;
+      top: -300px;
+      width: 2px;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Nombre de la Universidad */
+    .univ-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      position: relative;
+      padding-left: 10px;
+    }
+
+    /* Línea divisoria blanca horizontal */
+    .horizontal-divider {
+      width: 100%;
+      height: 2px;
+      background-color: #ffffff;
+      margin-bottom: 15px;
+      box-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* Caja del Sistema Integrado */
+    .badge-info-box {
+      display: inline-block;
+      background-color: #2b2523;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 12px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .badge-title-text {
+      font-size: 0.95rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    /* Subtítulo blanco inferior (Cambia dinámicamente) */
+    .badge-subtitle-box {
+      background-color: #ffffff;
+      color: #000000;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 6px 40px;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      /* Animación suave cuando cambia el texto */
+      transition: all 0.3s ease; 
+    }
+
+    /* Sección Derecha: Formulario e Información General */
+    .right-panel {
+      flex: 1;
+      min-width: 360px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 30px;
+      overflow-y: auto;
+      border-left: 1px solid #e5e7eb;
+    }
+
+    .logo-placeholder {
+      width: 180px;
+      height: auto;
+      background-color: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-placeholder img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .form-group {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: #3ea2d5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .links-helper {
+      width: 100%;
+      font-size: 12px;
+      color: #555;
+      margin-top: 15px;
+      line-height: 1.6;
+    }
+
+    .links-helper a {
+      color: #0284c7;
+      text-decoration: none;
+    }
+
+    .info-section {
+      width: 100%;
+      margin-top: 40px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 20px;
+    }
+
+    .info-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .info-list {
+      list-style: none;
+    }
+
+    .info-item {
+      padding: 10px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #0284c7;
+      border-radius: 4px;
+      background-color: #f9fafb;
+    }
+
+    .footer-text {
+      margin-top: auto;
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: center;
+      padding-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div class="left-panel">
+      <div class="slider-container">
+        <div class="slide active" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/sidebar-4.jpg');"></div>
+        <div class="slide" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/espe4.jpg');"></div>
+        <div class="slide" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/Espel.jpg');"></div>
+        <div class="slide" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/espe2.jpg');"></div>
+        <div class="slide" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/Iasa.jpg');"></div>
+        <div class="slide" style="background-image: url('https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/espe.jpg');"></div>
+      </div>
+
+      <div class="overlay"></div>
+
+      <div class="interactive-content">
+        <div class="decor-border-left"></div>
+        <div class="univ-name">UNIVERSIDAD DE LAS FUERZAS ARMADAS - ESPE</div>
+        <div class="horizontal-divider"></div>
+        
+        <div class="badge-info-box">
+          <div class="badge-title-text">Sistema Integrado de Información</div>
+          <div class="badge-subtitle-box" id="cambiante">gestion academica</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="logo-placeholder">
+        <img src="https://ofimatica.espe.edu.ec:9443/authenticationendpoint/images/Espe-Angular-Logo.png" alt="Logotipo Oficial" />
+      </div>
+
+      <div class="form-group">
+        <input type="text" placeholder="Usuario de prueba" readonly value="usuario_demo">
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="••••••••" readonly value="password_demo">
+      </div>
+
+      <button class="btn-submit" onclick="mostrarSimulacion()">Ingresar</button>
+
+      <div class="links-helper">
+        <p>¿Olvidó su <a href="#">Contraseña</a>?</p>
+        <p>Verifique su <a href="#">Usuario</a></p>
+      </div>
+
+      <div class="info-section">
+        <div class="info-title">Información General</div>
+        <ul class="info-list">
+          <li class="info-item">👤 Información de Estudiantes</li>
+          <li class="info-item">📑 Información de Matrículas</li>
+          <li class="info-item">🔍 Reporte Búsqueda de NRCs</li>
+        </ul>
+      </div>
+
+      <div class="footer-text">
+        © Universidad de las Fuerzas Armadas<br>
+        Unidad de Tecnologías de la Información y Comunicaciones
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    
+    // Lista de palabras requeridas asociadas al orden de las imágenes
+    const palabras = [
+      "gestion academica",
+      "estudiantes",
+      "investigación",
+      "administrativos",
+      "gestion de talento humano",
+      "docentes"
+    ];
+
+    const textoCambiante = document.getElementById('cambiante');
+
+    function mostrarSimulacion() {
+      alert("Demostración académica: Interfaz estática de referencia visual.");
+    }
+
+    function rotarSlider() {
+      // Ocultar imagen actual
+      slides[currentSlide].classList.remove('active');
+      
+      // Incrementar índice
+      currentSlide = (currentSlide + 1) % totalSlides;
+      
+      // Mostrar nueva imagen
+      slides[currentSlide].classList.add('active');
+      
+      // Cambiar el texto del contenedor blanco correspondientemente
+      textoCambiante.textContent = palabras[currentSlide];
+    }
+
+    // Rotación cada 4 segundos
+    setInterval(rotarSlider, 4000);
+  </script>
+
+</body>
+</html>
