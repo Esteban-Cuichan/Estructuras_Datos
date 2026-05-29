@@ -1,0 +1,9 @@
+1,1,Año Nuevo
+1,5,Dia del Trabajo
+24,5,Batalla de Pichincha
+10,8,Primer Grito de Independencia
+9,10,Independencia de Guayaquil
+2,11,Dia de Difuntos
+3,11,Independencia de Cuenca
+25,12,Navidad
+31,12,Año Viejo
