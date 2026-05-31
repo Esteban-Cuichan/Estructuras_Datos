@@ -66,5 +66,39 @@ class ListaDCE{
             }while(intercambio);
             guardarOrdenamiento();
         }
+
+        template<typename F,typename V>
+        Turno* busquedaBinaria(F extraerAtributo,V valor){
+            if(cabeza==nullptr)return nullptr;
+            int n=0;
+            Nodo* inicio=cabeza;
+            do{
+                n++;
+                temp=temp->getSiguiente();
+            }while(temp!=cabeza);
+            uintptr_t* tabla=new uintptr_t[n];
+            temp=cabeza;
+            for(int i=0;i<n;i++){
+                *(tabla+i)=reinterpret_cast<uintptr_t>(temp);
+                temp=temp->getSiguiente();
+            }
+            int izquierda=0,derecha=n-1;
+            Turno* resultado=nullptr;
+            while(izquierda<=derecha){
+                int medio=(izquierda+derecha)/2;
+                Nodo* nodoMedio=reinterpret_cast<Nodo*>(*(tabla+medio));
+                auto atributoActual=extraerAtributo(nodoMedio->getTurno());
+                if(atributoActual==valor){
+                    resultado=nodoMedio->getTurno();
+                    break;
+                }else if(atributoActual<valor){
+                    izquierda=medio+1;
+                }else{
+                    derecha=medio-1;
+                }
+            }
+            delete[] tabla;
+            return resultado;
+        }
 };
 #endif
