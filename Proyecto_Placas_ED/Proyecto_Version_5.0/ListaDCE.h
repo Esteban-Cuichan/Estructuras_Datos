@@ -72,6 +72,7 @@ class ListaDCE{
             if(cabeza==nullptr)return nullptr;
             int n=0;
             Nodo* inicio=cabeza;
+            Nodo* temp=inicio;
             do{
                 n++;
                 temp=temp->getSiguiente();
