@@ -1,7 +1,7 @@
 #define _WINSOCKAPI_
 #define NOWINBASEINTERLOCKS
 #ifndef NOMINMAX
-    #define NOMINMAX
+#define NOMINMAX
 #endif
 #define TYPE_ALIGNMENT 1
 #define _GDI32_

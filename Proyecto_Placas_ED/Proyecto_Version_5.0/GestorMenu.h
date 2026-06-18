@@ -566,9 +566,6 @@ class GestorMenu {
                 if (!regresarAMes) break; 
             }
 
-            // =========================================================================
-            // AQUÍ SE INTEGRÓ LA NUEVA SELECCIÓN INTERACTIVA CADA 15 MINUTOS
-            // =========================================================================
             cout << "\n[PROCESANDO] Cargando la disponibilidad de horas desde el sistema..." << endl;
             Sleep(500);
             
@@ -630,28 +627,6 @@ class GestorMenu {
                     cout << "[ERROR] Formato de placa invalido (Deben ser 3 letras mayusculas seguidas de 3 o 4 numeros).\n" << endl;
                 }
             } while (!validador.validarPlaca(placa));
-            int indicador = -1;
-            for (auto it = placa.rbegin(); it != placa.rend(); ++it) {
-                if (isdigit(*it)) { indicador = *it - '0'; break; }
-            }
-            if (indicador != -1) {
-                int mesCorrecto = 0;
-                if (indicador == 1) mesCorrecto = 2;
-                else if (indicador == 2) mesCorrecto = 3;
-                else if (indicador == 3) mesCorrecto = 4;
-                else if (indicador == 4) mesCorrecto = 5;
-                else if (indicador == 5) mesCorrecto = 6;
-                else if (indicador == 6) mesCorrecto = 7;
-                else if (indicador == 7) mesCorrecto = 8;
-                else if (indicador == 8) mesCorrecto = 9;
-                else if (indicador == 9) mesCorrecto = 10;
-                else if (indicador == 0) mesCorrecto = 11;
-                if (m != mesCorrecto && m != 12) {
-                    cout << "\n[RECHAZADO] Calendarizacion ANT: Placas terminadas en " << indicador << " deben matricularse en el mes " << mesCorrecto << "." << endl;
-                    system("pause");
-                    return;
-                }
-            }
             do {
                 cout << "Ingrese el color del vehiculo: "; 
                 getline(cin, color);
