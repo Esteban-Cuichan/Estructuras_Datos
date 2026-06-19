@@ -18,14 +18,6 @@ using namespace std;
 int main(){
     ListaDCE sistemaTurnos;
     GestorMenu gestor(sistemaTurnos);
-    
-    string archivoBase = "turnos.txt";
-    string archivoControl = "checksum.ptr";
-
-    if (!gestor.verificarIntegridadDatos(archivoBase, archivoControl)) {
-        return 0;
-    }
-
     int seleccionActiva=1;
     int totalOpciones=7;
     bool ejecutado=true;
@@ -51,7 +43,20 @@ int main(){
                     switch(seleccionActiva){
                         case 1:gestor.ejecutarAgendamiento();break;
                         case 2:sistemaTurnos.mostrarLista();system("pause");break;
-                        case 3:gestor.ejecutarModificacionPorID();break;
+                        case 3:{
+                            int idBuscar=0,d=0,m=0,a=0,nh=0,nm=0;
+                            cout<<"\n=== MODIFICAR TURNO POR ID ==="<<endl;
+                            cout<<"Ingrese el ID de 4 digitos a reprogramar: ";cin>>idBuscar;
+                            cout<<"Nuevo Anio: ";cin>>a;
+                            cout<<"Nuevo Mes: ";cin>>m;
+                            cout<<"Nuevo Dia: ";cin>>d;
+                            cout<<"Nueva Hora: ";cin>>nh;
+                            cout<<"Nuevos Minutos: ";cin>>nm;
+                            Fecha nuevaFecha(d,m,a,nh,nm);
+                            sistemaTurnos.modificar(idBuscar,nuevaFecha);
+                            system("pause");
+                            break;
+                        }
                         case 4:{
                             int idBuscar=0;
                             cout<<"\n=== ELIMINAR / CANCELAR TURNO POR ID ==="<<endl;
@@ -62,10 +67,7 @@ int main(){
                         }
                         case 5:gestor.ejecutarOrdenamientoTemplates();break;
                         case 6:sistemaTurnos.cifrarPlacas();system("pause");break;
-                        case 7:
-                            gestor.registrarFirmaSeguridad(archivoBase, archivoControl);
-                            ejecutado=false;
-                            break;
+                        case 7:ejecutado=false;break;
                         default:break;
                     }
                 }

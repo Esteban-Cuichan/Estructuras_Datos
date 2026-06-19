@@ -1,13 +1,14 @@
 #ifndef LISTADCE_H
 #define LISTADCE_H
 #include "Nodo.h"
+#include "TablaHash.h"
 #include <iostream>
 using namespace std;
-
 class ListaDCE{
     private:
         Nodo* cabeza;
         Nodo* cola;
+        TablaHash indiceHash;
     public:
         ListaDCE();
         ListaDCE(Nodo*,Nodo*);
@@ -66,13 +67,11 @@ class ListaDCE{
             }while(intercambio);
             guardarOrdenamiento();
         }
-
         template<typename F,typename V>
         Turno* busquedaBinaria(F extraerAtributo,V valor){
             if(cabeza==nullptr)return nullptr;
             int n=0;
-            Nodo* inicio=cabeza;
-            Nodo* temp=inicio;
+            Nodo* temp=cabeza;
             do{
                 n++;
                 temp=temp->getSiguiente();
@@ -100,39 +99,6 @@ class ListaDCE{
             }
             delete[] tabla;
             return resultado;
-        }
-
-        template <typename F>
-        Turno* busquedaHash(F extraerAtributo, const string& valorBuscar) {
-            if (cabeza == nullptr) return nullptr;
-            int tamano = 0;
-            Nodo* actual = cabeza;
-            do {
-                tamano++;
-                actual = actual->getSiguiente();
-            } while (actual != cabeza);
-            unsigned long hash = 5381;
-            for (char c : valorBuscar) {
-                hash = ((hash << 5) + hash) + c;
-            }
-            int indiceObjetivo = hash % tamano;
-            actual = cabeza;
-            for (int i = 0; i < indiceObjetivo; ++i) {
-                actual = actual->getSiguiente();
-            }
-            if (extraerAtributo(actual->getTurno()) == valorBuscar) {
-                return actual->getTurno();
-            }
-            Nodo* arranque = actual;
-            actual = actual->getSiguiente();
-            while (actual != arranque) {
-                if (extraerAtributo(actual->getTurno()) == valorBuscar) {
-                    return actual->getTurno();
-                }
-                actual = actual->getSiguiente();
-            }
-
-            return nullptr;
         }
 };
 #endif

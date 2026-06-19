@@ -186,11 +186,12 @@ string Fecha::Feriado(int dia,int mes,int year){
 string Fecha::validarFechaYObtenerFeriado(int dia,int mes,int year){
     string diaSemana=calcularDiaSemana();
     if(diaSemana=="Sabado" || diaSemana=="Domingo"){
-        return "Fin de semana (Oficinas cerradas el dia " + diaSemana + ")";
+        return "Fin de semana (Oficinas cerradas)";
     }
     if(esFeriadoMovil(dia,mes,year)){
         return "Feriado de Carnaval o Semana Santa";
     }
+
     string FeriadoDirecto=Feriado(dia,mes,year);
     if(!FeriadoDirecto.empty()){
         if(diaSemana=="Lunes" || diaSemana=="Viernes"){
@@ -224,6 +225,7 @@ string Fecha::validarFechaYObtenerFeriado(int dia,int mes,int year){
             for (int d = 1; d <= 31; d++) {
                 int diaAnioEvaluado = obtenerDiadelYear(d, m, year);
                 string feriadoEval = Feriado(d, m, year);
+                
                 if (!feriadoEval.empty()) {
                     if (diaAnioEvaluado == (diaActualYear - 1) ||
                         diaAnioEvaluado == (diaActualYear - 2) ||

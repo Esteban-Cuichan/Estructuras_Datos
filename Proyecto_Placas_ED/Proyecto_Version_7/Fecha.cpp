@@ -64,7 +64,7 @@ string Fecha::calcularDiaSemana(){
         cout<<"No se ha encontrado el archivo mencionado!"<<endl;
     }
     string nomDia,diaarchivo;
-    const int* c=(const int[]){0,3,2,5,0,3,5,1,4,6,2,4};
+    const int* c=(const int []){0,3,2,5,0,3,5,1,4,6,2,4};
     int y=year-(mes<3);
     int diaSemana=(y+(y/4)-(y/100)+(y/400)+*(c+(mes-1))+dia) % 7;
     while(getline(archivo,diaarchivo,',')){
@@ -186,11 +186,12 @@ string Fecha::Feriado(int dia,int mes,int year){
 string Fecha::validarFechaYObtenerFeriado(int dia,int mes,int year){
     string diaSemana=calcularDiaSemana();
     if(diaSemana=="Sabado" || diaSemana=="Domingo"){
-        return "Fin de semana (Oficinas cerradas el dia " + diaSemana + ")";
+        return "Fin de semana (Oficinas cerradas)";
     }
     if(esFeriadoMovil(dia,mes,year)){
         return "Feriado de Carnaval o Semana Santa";
     }
+
     string FeriadoDirecto=Feriado(dia,mes,year);
     if(!FeriadoDirecto.empty()){
         if(diaSemana=="Lunes" || diaSemana=="Viernes"){
@@ -224,6 +225,7 @@ string Fecha::validarFechaYObtenerFeriado(int dia,int mes,int year){
             for (int d = 1; d <= 31; d++) {
                 int diaAnioEvaluado = obtenerDiadelYear(d, m, year);
                 string feriadoEval = Feriado(d, m, year);
+                
                 if (!feriadoEval.empty()) {
                     if (diaAnioEvaluado == (diaActualYear - 1) ||
                         diaAnioEvaluado == (diaActualYear - 2) ||
