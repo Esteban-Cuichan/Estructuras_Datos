@@ -131,7 +131,7 @@ class GestorMenu {
                         cout << "\b \b";
                     }
                 }
-                else if ((tecla >= 'A' && tecla <= 'Z') || (tecla >= 'a' && tecla <= 'z') || tecla == 32) { 
+                else if ((tecla >= 'A' && tecla <= 'Z') || (tecla >= 'a' && tecla <= 'z')) { 
                     if (entrada.length() < longitudMaxima) {
                         entrada.push_back(static_cast<char>(tecla));
                         cout << static_cast<char>(tecla);
@@ -349,7 +349,7 @@ class GestorMenu {
             mostrarCursorTexto(true);
             system("cls");
             cout << "============================================" << endl;
-            cout << "        Sistema Closed Correctamente.      " << endl;
+            cout << "        Sistema Cerrado correctamente.      " << endl;
             cout << "============================================" << endl;
         }
 
@@ -362,7 +362,7 @@ class GestorMenu {
                 COORD coord = {0, 0};
                 SetConsoleCursorPosition(hOutput, coord);
                 cout << "==========================================================" << endl;
-                cout << "   === ORDENAR REPORTES DE TURNOS (BUBBLE SORT) ===" << endl;
+                cout << "============= ORDENAR REPORTES DE TURNOS =================" << endl;
                 cout << "          (Use Flechas ARRIBA/ABAJO y ENTER)              " << endl;
                 cout << "==========================================================" << endl;
                 const char* opcionesSub[] = {
@@ -735,8 +735,10 @@ class GestorMenu {
                         cout<<"[RECHAZADO] El dia debe estar entre 1 and 31.\n"<<endl;
                         continue;
                     }
-                    if(a==anioActual&&m==mesActual&&d<diaActual){
-                        cout<<"[RECHAZADO] El dia ingresado ya paso. Hoy es dia "<<diaActual<<".\n"<<endl;
+                    if (a == anioActual && m == mesActual && d < diaActual){
+                        Fecha fechaHoy(diaActual, mesActual, anioActual, 0, 0);
+                        string nombreDiaHoy = fechaHoy.calcularDiaSemana();
+                        cout << "[RECHAZADO] El dia ingresado ya paso. Hoy es dia " << nombreDiaHoy << " " << diaActual << ".\n" << endl;
                         continue;
                     }
                     Fecha fechaAuxiliar(d,m,a,0,0);
@@ -828,6 +830,31 @@ class GestorMenu {
                 }
                 break; 
             }
+            if (yearAuto < anioActual) {
+                int indicador = -1;
+                for (auto it = placa.rbegin(); it != placa.rend(); ++it) {
+                    if (isdigit(*it)) { indicador = *it - '0'; break; }
+                }
+                if (indicador != -1) {
+                    int mesCorrecto = 0;
+                    if (indicador == 1) mesCorrecto = 2;
+                    else if (indicador == 2) mesCorrecto = 3;
+                    else if (indicador == 3) mesCorrecto = 4;
+                    else if (indicador == 4) mesCorrecto = 5;
+                    else if (indicador == 5) mesCorrecto = 6;
+                    else if (indicador == 6) mesCorrecto = 7;
+                    else if (indicador == 7) mesCorrecto = 8;
+                    else if (indicador == 8) mesCorrecto = 9;
+                    else if (indicador == 9) mesCorrecto = 10;
+                    else if (indicador == 0) mesCorrecto = 11;
+
+                    if (m != mesCorrecto && m != 12) {
+                        cout << "\n[RECHAZADO] Calendarizacion: Vehiculos de anios anteriores terminados en " << indicador << " deben matricularse en el mes " << mesCorrecto << "." << endl;
+                        system("pause");
+                        return;
+                    }
+                }
+            }
             color = leerSoloLetras("Ingrese el color del vehiculo: ", 20);
             Vehiculo carro(color, placa, yearAuto);
             int idTurno = sistemaTurnos.generarSiguienteID();
@@ -858,19 +885,20 @@ class GestorMenu {
                 }
                 actual=actual->getSiguiente();
             }while(actual!=sistemaTurnos.getCabeza());
+
             if(encontrado==nullptr){
                 cout<<"\n[ERROR] No se encontro ningun turno con el ID especificado."<<endl;
                 system("pause");
                 return;
             }
+
             cout<<"\n[TURNO ENCONTRADO] Datos actuales del registro:"<<endl;
             cout<<" -> Propietario: "<<encontrado->getUsuario().getNombre()<<" "<<encontrado->getUsuario().getApellido()<<endl;
             cout<<" -> Vehiculo   : Placa ["<<encontrado->getVehiculo().getPlaca()<<"]"<<endl;
             cout<<" -> Fecha/Hora : "<<encontrado->getFecha().getDia()<<"/"<<encontrado->getFecha().getMes()<<"/"<<encontrado->getFecha().getYear()<<endl;
             cout<<"=========================================================="<<endl;
-            int d=0,m=0,a=0,hh=0,mm=0,yearAuto=0;
-            string cedula="",nombre="",apellido="",telefono="",correo="";
-            string placa="",color="";
+
+            int d=0,m=0,a=0,hh=0,mm=0;
             time_t tiempoActual=time(nullptr);
             tm* fechaSistema=localtime(&tiempoActual);
             int anioActual=fechaSistema->tm_year+1900;
@@ -878,7 +906,8 @@ class GestorMenu {
             int diaActual=fechaSistema->tm_mday;
             int horaActual=fechaSistema->tm_hour;
             int minActual=fechaSistema->tm_min;
-            cout<<"\n--- NUEVA FECHA DE AGENDAMIENTO ---"<<endl;
+
+            cout<<"\n--- REPROGRAMAR NUEVA FECHA DE CITA ---"<<endl;
             while(true){
                 a=leerEnteroBloqueado("Ingrese el nuevo anio (Actual o Siguiente): ",4);
                 if(a>=anioActual&&a<=(anioActual+1))break;
@@ -924,58 +953,21 @@ class GestorMenu {
                 }
                 if(!regresarAMes)break;
             }
+
             cout<<"\n[PROCESANDO] Cargando la disponibilidad de horas para la nueva fecha..."<<endl;
             Sleep(500);
             if(!seleccionarBloqueHorario(d,m,a,anioActual,mesActual,diaActual,horaActual,minActual,hh,mm)){
-                cout<<"[INFO] Modificacion cancelada por falta de horarios."<<endl;
+                cout<<"[INFO] Reprogramacion cancelada por falta de horarios."<<endl;
                 system("pause");
                 return;
             }
+            
+            // Asignación directa de la nueva fecha al mismo turno sin alterar el resto de atributos
             Fecha nuevaFecha(d,m,a,hh,mm);
-            cout<<"\n--- NUEVOS DATOS DEL PROPIETARIO ---"<<endl;
-            do{
-                cedula=leerSoloNumeros("Ingrese la cedula del dueno (10 digitos): ",10);
-                if(!validadorCedula.validar(cedula.c_str())){
-                    cout<<"[ERROR] La cedula es invalida (Algoritmo de verificacion ecuatoriano).\n"<<endl;
-                }
-            }while(!validadorCedula.validar(cedula.c_str()));
-            nombre=leerSoloLetras("Ingrese el nombre (Solo letras): ",30);
-            apellido=leerSoloLetras("Ingrese el apellido (Solo letras): ",30);
-            do{
-                telefono=leerSoloNumeros("Ingrese su numero de telefono (10 digitos): ",10);
-                if(!validador.validarTelefono(telefono)){
-                    cout<<"[ERROR] Telefono invalido. Deben ser exactamente 10 digitos numericos.\n"<<endl;
-                }
-            }while(!validador.validarTelefono(telefono));
-            do{
-                cout<<"Ingrese su correo electronico (ejemplo@dominio.com): ";
-                getline(cin,correo);
-                if(!validador.validarCorreo(correo)){
-                    cout<<"[ERROR] Formato de correo electronico incorrecto.\n"<<endl;
-                }
-            }while(!validador.validarCorreo(correo));
-            Persona nuevoPropietario(nombre,apellido,cedula,telefono,correo);
-            cout<<"\n==== NUEVO REGISTRO DE VEHICULO ===="<<endl;
-            while(true){
-                yearAuto=leerEnteroBloqueado("Ingrese el anio del vehiculo (1950 - posterior): ",4);
-                if(yearAuto>=1950&&yearAuto<=(anioActual+1))break;
-                cout<<"[ERROR] Anio fuera de rango permitido (1950 - "<<(anioActual+1)<<").\n"<<endl;
-            }
-            do{
-                cout<<"Ingrese la placa (Ej: ABC1234): ";
-                getline(cin,placa);
-                for(char& c:placa)c=toupper(c);
-                if(!validador.validarPlaca(placa)){
-                    cout<<"[ERROR] Formato de placa invalido.\n"<<endl;
-                }
-            }while(!validador.validarPlaca(placa));
-            color=leerSoloLetras("Ingrese el color del vehiculo: ",20);
-            Vehiculo nuevoCarro(color,placa,yearAuto);
             encontrado->setFecha(nuevaFecha);
-            encontrado->setUsuario(nuevoPropietario);
-            encontrado->setVehiculo(nuevoCarro);
+            
             registrarFirmaSeguridad("turnos.txt", "checksum.ptr");
-            cout<<"\n[EXITO] Turno ID "<<idBuscar<<" modificado correctamente con todas las politicas de seguridad."<<endl;
+            cout<<"\n[EXITO] Cita reprogramada correctamente. El Turno ID "<<idBuscar<<" ahora esta agendado para el "<<d<<"/"<<m<<"/"<<a<<"."<<endl;
             system("pause");
         }
 

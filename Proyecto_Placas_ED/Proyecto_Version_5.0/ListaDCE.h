@@ -67,72 +67,81 @@ class ListaDCE{
             guardarOrdenamiento();
         }
 
-        template<typename F,typename V>
-        Turno* busquedaBinaria(F extraerAtributo,V valor){
-            if(cabeza==nullptr)return nullptr;
-            int n=0;
-            Nodo* inicio=cabeza;
-            Nodo* temp=inicio;
-            do{
-                n++;
-                temp=temp->getSiguiente();
-            }while(temp!=cabeza);
-            uintptr_t* tabla=new uintptr_t[n];
-            temp=cabeza;
-            for(int i=0;i<n;i++){
-                *(tabla+i)=reinterpret_cast<uintptr_t>(temp);
-                temp=temp->getSiguiente();
-            }
-            int izquierda=0,derecha=n-1;
-            Turno* resultado=nullptr;
-            while(izquierda<=derecha){
-                int medio=(izquierda+derecha)/2;
-                Nodo* nodoMedio=reinterpret_cast<Nodo*>(*(tabla+medio));
-                auto atributoActual=extraerAtributo(nodoMedio->getTurno());
-                if(atributoActual==valor){
-                    resultado=nodoMedio->getTurno();
-                    break;
-                }else if(atributoActual<valor){
-                    izquierda=medio+1;
-                }else{
-                    derecha=medio-1;
-                }
-            }
-            delete[] tabla;
-            return resultado;
-        }
-
         template <typename F>
         Turno* busquedaHash(F extraerAtributo, const string& valorBuscar) {
             if (cabeza == nullptr) return nullptr;
+
             int tamano = 0;
             Nodo* actual = cabeza;
             do {
                 tamano++;
                 actual = actual->getSiguiente();
             } while (actual != cabeza);
+
             unsigned long hash = 5381;
             for (char c : valorBuscar) {
                 hash = ((hash << 5) + hash) + c;
             }
+            
             int indiceObjetivo = hash % tamano;
+
             actual = cabeza;
             for (int i = 0; i < indiceObjetivo; ++i) {
                 actual = actual->getSiguiente();
             }
-            if (extraerAtributo(actual->getTurno()) == valorBuscar) {
-                return actual->getTurno();
-            }
+
             Nodo* arranque = actual;
-            actual = actual->getSiguiente();
-            while (actual != arranque) {
+            do {
                 if (extraerAtributo(actual->getTurno()) == valorBuscar) {
                     return actual->getTurno();
                 }
                 actual = actual->getSiguiente();
-            }
+            } while (actual != arranque);
 
             return nullptr;
+        }
+
+        template <typename F>
+        Turno* busquedaBinaria(F extraerAtributo, const string& valorBuscar) {
+            if (cabeza == nullptr) return nullptr;
+
+            int total = 0;
+            Nodo* actual = cabeza;
+            do {
+                total++;
+                actual = actual->getSiguiente();
+            } while (actual != cabeza);
+
+            Turno** arreglo = new Turno*[total];
+            int indice = 0;
+            actual = cabeza;
+            do {
+                *(arreglo + indice) = actual->getTurno();
+                indice++;
+                actual = actual->getSiguiente();
+            } while (actual != cabeza);
+
+            int izquierda = 0;
+            int derecha = total - 1;
+            Turno* encontrado = nullptr;
+
+            while (izquierda <= derecha) {
+                int medio = izquierda + (derecha - izquierda) / 2;
+                string valorMedio = extraerAtributo(*(arreglo + medio));
+
+                if (valorMedio == valorBuscar) {
+                    encontrado = *(arreglo + medio);
+                    break;
+                }
+                if (valorMedio < valorBuscar) {
+                    izquierda = medio + 1;
+                } else {
+                    derecha = medio - 1;
+                }
+            }
+
+            delete[] arreglo;
+            return encontrado;
         }
 };
 #endif
