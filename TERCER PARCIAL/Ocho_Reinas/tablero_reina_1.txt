@@ -1,0 +1,11 @@
+Tablero 5x5
+Reina actual: 1
+Intentos realizados: 1
+-------------------
+1 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+-------------------
+Posiciones de reinas: (0,0) 
