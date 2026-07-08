@@ -91,7 +91,7 @@ int calcularOffsetOptimo(map<Nodo*, int>& posX, int anchoPantalla) {
 }
 
 void dibujarArbolRT(HDC hdc, Nodo* raiz, int nivel, int espacioVertical,
-                    map<Nodo*, int>& posX, int offsetX, int yInicial, int ultimoValor) {
+                    map<Nodo*, int>& posX, int offsetX, int yInicial, Nodo* ultimoNodo) {
     if (raiz == nullptr) return;
     
     int radio = 20;
@@ -104,7 +104,7 @@ void dibujarArbolRT(HDC hdc, Nodo* raiz, int nivel, int espacioVertical,
         MoveToEx(hdc, x, y, nullptr);
         LineTo(hdc, xHijo, yHijo);
         dibujarArbolRT(hdc, raiz->getIzquierdo(), nivel + 1, espacioVertical,
-                      posX, offsetX, yInicial, ultimoValor);
+                      posX, offsetX, yInicial, ultimoNodo);
     }
     
     if (raiz->getDerecho() != nullptr) {
@@ -113,13 +113,13 @@ void dibujarArbolRT(HDC hdc, Nodo* raiz, int nivel, int espacioVertical,
         MoveToEx(hdc, x, y, nullptr);
         LineTo(hdc, xHijo, yHijo);
         dibujarArbolRT(hdc, raiz->getDerecho(), nivel + 1, espacioVertical,
-                      posX, offsetX, yInicial, ultimoValor);
+                      posX, offsetX, yInicial, ultimoNodo);
     }
     
     HBRUSH fondoNodo;
     HPEN bordeNodo;
     
-    if ( raiz->getValor() == ultimoValor) {
+    if (raiz == ultimoNodo) {
         fondoNodo = CreateSolidBrush(RGB(255, 255, 255));
         bordeNodo = CreatePen(PS_SOLID, 3, RGB(255, 200, 0));
         SetTextColor(hdc, RGB(0, 0, 0));
@@ -160,7 +160,7 @@ void dibujarEscena(HWND hwnd, HDC hdc, Nodo* raiz, int anchoPantalla, Nodo* ulti
         HPEN lapizRamas = CreatePen(PS_SOLID, 2, RGB(200, 200, 200));
         SelectObject(hdc, lapizRamas);
         
-        dibujarArbolRT(hdc, raiz, 0, 80, posX, offsetX, 120, ultimoNodoGlobal);
+        dibujarArbolRT(hdc, raiz, 0, 80, posX, offsetX, 120, ultimoNodo);
         
         DeleteObject(lapizRamas);
     }
@@ -231,14 +231,20 @@ int main() {
     system("cls");
     
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(hConsole, &cursorInfo);
     cursorInfo.bVisible = true; // Mantener cursor visible para entrada
     SetConsoleCursorInfo(hConsole, &cursorInfo);
+
+    DWORD modoEntrada;
+    if (GetConsoleMode(hInput, &modoEntrada)) {
+        SetConsoleMode(hInput, modoEntrada & ~ENABLE_ECHO_INPUT);
+    }
     
     HDC hdc = GetDC(hwnd);
     raizGlobal = nullptr;
-    
+
     // Crear hilo para leer entrada
     thread hiloEntrada(leerEntrada);
     
@@ -250,15 +256,16 @@ int main() {
         GetClientRect(hwnd, &rectVentana);
         int anchoConsola = rectVentana.right - rectVentana.left;
         
-        dibujarEscena(hwnd, hdc, raizGlobal, anchoConsola, ultimoValorGlobal);
+        dibujarEscena(hwnd, hdc, raizGlobal, anchoConsola, ultimoNodoGlobal);
         
         // Info del árbol dibujada con GDI, NO con cout
         // (así no interfiere con cin)
         string info = "";
         if (raizGlobal != nullptr) {
+            string ultimoValor = (ultimoNodoGlobal != nullptr) ? to_string(ultimoNodoGlobal->getValor()) : "-";
             info = "Nodos: " + to_string(contarNodos(raizGlobal)) +
                 "  Altura: " + to_string(calcularAltura(raizGlobal)) +
-                "  Ultimo: " + to_string(ultimoValorGlobal);
+                "  Ultimo: " + ultimoValor;
         } else {
             info = "Arbol vacio";
         }
@@ -268,8 +275,8 @@ int main() {
         SetBkColor(hdc, RGB(20, 20, 40));
         SetTextColor(hdc, RGB(200, 200, 200));
         TextOutA(hdc, 10, 10, info.c_str(), info.length());
-        
-        string prompt = "[Numero (-1 para salir)]: ";
+
+        string prompt = "Numero (-1 para salir): ";
         TextOutA(hdc, 10, 35, prompt.c_str(), prompt.length());
         
         Sleep(50);
