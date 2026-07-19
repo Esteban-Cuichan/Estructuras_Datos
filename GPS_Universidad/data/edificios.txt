@@ -1,0 +1,27 @@
+# Archivo de edificios del campus universitario
+# Formato: id|nombre|latitud|longitud|tipo
+# Tipos válidos: EDIFICIO, GARITA, ENTRADA, CRUCE, ESCALERA, RAMPA, 
+#                PARQUEADERO, CAFETERIA, BIBLIOTECA, LABORATORIO, AUDITORIO
+# 
+# Coordenadas aproximadas (latitud, longitud) para un campus universitario típico
+
+1|Edificio de Ingeniería|19.432608|-99.133208|EDIFICIO
+2|Biblioteca Central|19.433100|-99.132500|BIBLIOTECA
+3|Cafetería Principal|19.432000|-99.133500|CAFETERIA
+4|Garita Norte|19.431500|-99.134000|GARITA
+5|Auditorio Magno|19.433500|-99.132000|AUDITORIO
+6|Laboratorio de Ciencias|19.434000|-99.133800|LABORATORIO
+7|Edificio de Administración|19.432200|-99.132800|EDIFICIO
+8|Parqueadero Sur|19.431800|-99.134500|PARQUEADERO
+9|Rampa Central|19.432500|-99.133000|RAMPA
+10|Entrada Principal|19.431200|-99.133500|ENTRADA
+11|Cruce Norte-Sur|19.432800|-99.133700|CRUCE
+12|Escaleras Biblioteca|19.433300|-99.132800|ESCALERA
+13|Edificio de Ciencias Sociales|19.433800|-99.134200|EDIFICIO
+14|Parqueadero Norte|19.432900|-99.132200|PARQUEADERO
+15|Cafetería Secundaria|19.434500|-99.133000|CAFETERIA
+16|Garita Este|19.434200|-99.131800|GARITA
+17|Auditorio de Conferencias|19.431800|-99.132300|AUDITORIO
+18|Laboratorio de Computación|19.433400|-99.134500|LABORATORIO
+19|Edificio de Artes|19.432400|-99.131500|EDIFICIO
+20|Rampa Biblioteca|19.433200|-99.132600|RAMPA

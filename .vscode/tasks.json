@@ -1,31 +1,25 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: g++.exe compilar archivo activo",
-            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
             "args": [
-                "-fdiagnostics-color=always",
+                "-std=c++11",
                 "-g",
-                "-mconsole",
-                "${file}",
+                "main.cpp",
+                "Nodo.cpp",
+                "ArbolRojoNegro.cpp",
+                "VisualizadorRedBlack.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-lgdi32",
-                "-luser32"
-            ],
-            "options": {
-                "cwd": "C:\\msys64\\ucrt64\\bin"
-            },
-            "problemMatcher": [
-                "$gcc"
+                "redblacktree.exe",
+                "-lgdi32"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "detail": "Tarea generada por el depurador para compilar con G++"
+            }
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
