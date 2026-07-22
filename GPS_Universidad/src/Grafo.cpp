@@ -1,238 +1,128 @@
-#include "../include/Grafo.h"
-#include "../include/ListaAdyacencia.h"
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
+#include "Grafo.h"
+#include <algorithm>
 
-Grafo::Grafo():numNodos(0),numAristas(0),capacidadNodos(CAPACIDAD_INICIAL),capacidadAristas(CAPACIDAD_INICIAL){
-    this->nodos=new Nodo*[this->capacidadNodos];
-    this->aristas=new Arista*[this->capacidadAristas];
-    for (int i=0; i<this->capacidadNodos; i++) {
-        this->nodos[i]=nullptr;
-    }
-    for (int i=0; i<this->capacidadAristas; i++) {
-        this->aristas[i]=nullptr;
-    }
+namespace gps {
+
+Grafo::Grafo()
+    : nodos_(nullptr), adyacencias_(nullptr), cantidad_(0), capacidad_(0) {
+    asegurarCapacidad(8);
 }
 
 Grafo::~Grafo() {
-    for (int i=0; i<this->numNodos; i++) {
-        delete this->nodos[i];
-        this->nodos[i]=nullptr;
+    for (int i = 0; i < cantidad_; ++i) {
+        delete nodos_[i];
+        delete adyacencias_[i];
     }
-    for (int i=0; i<this->numAristas; i++) {
-        delete this->aristas[i];
-        this->aristas[i]=nullptr;
-    }
-    delete[] this->nodos;
-    delete[] this->aristas;
-    this->numNodos=0;
-    this->numAristas=0;
-    this->capacidadNodos=0;
-    this->capacidadAristas=0;
+    delete[] nodos_;
+    delete[] adyacencias_;
 }
 
-bool Grafo::redimensionarNodos() {
-    int nuevaCapacidad=this->capacidadNodos*FACTOR_INCREMENTO;
-    Nodo** nuevosNodos=new Nodo*[nuevaCapacidad];
-    if (nuevosNodos==nullptr) {
+void Grafo::asegurarCapacidad(int nuevaCapacidad) {
+    if (nuevaCapacidad <= capacidad_) {
+        return;
+    }
+
+    int capacidadFinal = std::max(nuevaCapacidad, capacidad_ * 2);
+    if (capacidadFinal < 8) {
+        capacidadFinal = 8;
+    }
+
+    Nodo **nuevosNodos = new Nodo *[capacidadFinal];
+    ListaAdyacencia **nuevasAdyacencias = new ListaAdyacencia *[capacidadFinal];
+
+    for (int i = 0; i < cantidad_; ++i) {
+        nuevosNodos[i] = nodos_[i];
+        nuevasAdyacencias[i] = adyacencias_[i];
+    }
+
+    delete[] nodos_;
+    delete[] adyacencias_;
+
+    nodos_ = nuevosNodos;
+    adyacencias_ = nuevasAdyacencias;
+    capacidad_ = capacidadFinal;
+}
+
+bool Grafo::agregarNodo(Nodo *nodo) {
+    if (obtenerIndiceNodo(nodo->obtenerId()) != -1) {
         return false;
     }
-    for (int i=0; i<nuevaCapacidad; i++) {
-        nuevosNodos[i]=nullptr;
+
+    if (cantidad_ + 1 > capacidad_) {
+        asegurarCapacidad(cantidad_ + 1);
     }
-    for (int i=0; i<this->numNodos; i++) {
-        nuevosNodos[i]=this->nodos[i];
-    }
-    delete[] this->nodos;
-    this->nodos=nuevosNodos;
-    this->capacidadNodos=nuevaCapacidad;
+
+    nodos_[cantidad_] = nodo;
+    adyacencias_[cantidad_] = new ListaAdyacencia();
+    ++cantidad_;
     return true;
 }
 
-bool Grafo::redimensionarAristas() {
-    int nuevaCapacidad=this->capacidadAristas*FACTOR_INCREMENTO;
-    Arista** nuevasAristas=new Arista*[nuevaCapacidad];
-    if (nuevasAristas==nullptr) {
+bool Grafo::agregarArista(Arista *arista) {
+    int origenIndice = obtenerIndiceNodo(arista->obtenerOrigenId());
+    int destinoIndice = obtenerIndiceNodo(arista->obtenerDestinoId());
+
+    if (origenIndice == -1 || destinoIndice == -1) {
         return false;
     }
-    for (int i=0; i<nuevaCapacidad; i++) {
-        nuevasAristas[i]=nullptr;
-    }
-    for (int i=0; i<this->numAristas; i++) {
-        nuevasAristas[i]=this->aristas[i];
-    }
-    delete[] this->aristas;
-    this->aristas=nuevasAristas;
-    this->capacidadAristas=nuevaCapacidad;
+
+    adyacencias_[origenIndice]->agregarArista(arista);
     return true;
 }
 
-bool Grafo::agregarNodo(Nodo* nodo) {
-    if (nodo==nullptr) {
+bool Grafo::eliminarNodo(int id) {
+    int indice = obtenerIndiceNodo(id);
+    if (indice == -1) {
         return false;
     }
-    if (this->existeNodo(nodo->getId())) {
-        return false;
+
+    delete nodos_[indice];
+    delete adyacencias_[indice];
+
+    for (int i = indice; i < cantidad_ - 1; ++i) {
+        nodos_[i] = nodos_[i + 1];
+        adyacencias_[i] = adyacencias_[i + 1];
     }
-    if (this->numNodos>=this->capacidadNodos) {
-        if (!this->redimensionarNodos()) {
-            return false;
-        }
-    }
-    this->nodos[this->numNodos]=nodo;
-    this->numNodos++;
+
+    --cantidad_;
     return true;
 }
 
-bool Grafo::agregarArista(Arista* arista) {
-    if (arista==nullptr) {
-        return false;
-    }
-    Nodo* origen=arista->getOrigen();
-    Nodo* destino=arista->getDestino();
-    if (origen==nullptr || destino==nullptr) {
-        return false;
-    }
-    if (!this->existeNodo(origen->getId()) || !this->existeNodo(destino->getId())) {
-        return false;
-    }
-    if (this->existeArista(origen, destino)) {
-        return false;
-    }
-    if (this->numAristas>=this->capacidadAristas) {
-        if (!this->redimensionarAristas()) {
-            return false;
-        }
-    }
-    this->aristas[this->numAristas]=arista;
-    this->numAristas++;
-    ListaAdyacencia* listaOrigen=origen->getListaAdyacencia();
-    if (listaOrigen!=nullptr) {
-        listaOrigen->agregarArista(arista);
-    }
-    return true;
+int Grafo::obtenerCantidadNodos() const {
+    return cantidad_;
 }
 
-Nodo* Grafo::buscarNodoPorId(int id) const {
-    for (int i=0; i<this->numNodos; i++) {
-        if (this->nodos[i]->getId()==id) {
-            return this->nodos[i];
-        }
-    }
-    return nullptr;
+const Nodo *Grafo::obtenerNodoPorId(int id) const {
+    int indice = obtenerIndiceNodo(id);
+    return indice != -1 ? nodos_[indice] : nullptr;
 }
 
-Nodo* Grafo::buscarNodoPorNombre(const char* nombre) const {
-    if (nombre==nullptr) {
+Nodo *Grafo::obtenerNodoPorId(int id) {
+    int indice = obtenerIndiceNodo(id);
+    return indice != -1 ? nodos_[indice] : nullptr;
+}
+
+const Nodo *Grafo::obtenerNodoPorIndice(int indice) const {
+    if (indice < 0 || indice >= cantidad_) {
         return nullptr;
     }
-    for (int i=0; i<this->numNodos; i++) {
-        if (std::strcmp(this->nodos[i]->getNombre(), nombre)==0) {
-            return this->nodos[i];
-        }
-    }
-    return nullptr;
+    return nodos_[indice];
 }
 
-Arista* Grafo::buscarArista(Nodo* origen, Nodo* destino) const {
-    if (origen==nullptr || destino==nullptr) {
+const ListaAdyacencia *Grafo::obtenerAdyacenciaPorIndice(int indice) const {
+    if (indice < 0 || indice >= cantidad_) {
         return nullptr;
     }
-    for (int i=0; i<this->numAristas; i++) {
-        if (this->aristas[i]->esIgual(origen, destino)) {
-            return this->aristas[i];
+    return adyacencias_[indice];
+}
+
+int Grafo::obtenerIndiceNodo(int id) const {
+    for (int i = 0; i < cantidad_; ++i) {
+        if (nodos_[i]->obtenerId() == id) {
+            return i;
         }
     }
-    return nullptr;
+    return -1;
 }
 
-int Grafo::getNumNodos() const {
-    return this->numNodos;
-}
-
-Nodo* Grafo::getNodo(int indice) const {
-    if (indice<0 || indice>=this->numNodos) {
-        return nullptr;
-    }
-    return this->nodos[indice];
-}
-
-int Grafo::getNumAristas() const {
-    return this->numAristas;
-}
-
-Arista* Grafo::getArista(int indice) const {
-    if (indice<0 || indice>=this->numAristas) {
-        return nullptr;
-    }
-    return this->aristas[indice];
-}
-
-bool Grafo::existeNodo(int id) const {
-    return (this->buscarNodoPorId(id)!=nullptr);
-}
-
-bool Grafo::existeArista(Nodo* origen, Nodo* destino) const {
-    return (this->buscarArista(origen, destino)!=nullptr);
-}
-
-char* Grafo::toString() const {
-    const int TAMANO_INICIAL=1024;
-    const int TAMANO_INCREMENTO=512;
-    char* resultado=new char[TAMANO_INICIAL];
-    int capacidadActual=TAMANO_INICIAL;
-    int posicion=0;
-    auto agregarTexto=[&](const char* texto) {
-        int longitudTexto=std::strlen(texto);
-        if (posicion+longitudTexto+1>=capacidadActual) {
-            int nuevaCapacidad=capacidadActual+TAMANO_INCREMENTO;
-            char* nuevoResultado=new char[nuevaCapacidad];
-            std::strcpy(nuevoResultado, resultado);
-            delete[] resultado;
-            resultado=nuevoResultado;
-            capacidadActual=nuevaCapacidad;
-        }
-        std::strcpy(resultado+posicion, texto);
-        posicion+=longitudTexto;
-    };
-    char cabecera[100];
-    std::snprintf(cabecera, sizeof(cabecera), "Grafo con %d nodos y %d aristas:\n", this->numNodos, this->numAristas);
-    agregarTexto(cabecera);
-    agregarTexto("Nodos:\n");
-    for (int i=0; i<this->numNodos; i++) {
-        char* infoNodo=this->nodos[i]->toString();
-        agregarTexto("  - ");
-        agregarTexto(infoNodo);
-        agregarTexto("\n");
-        delete[] infoNodo;
-    }
-    agregarTexto("Aristas:\n");
-    for (int i=0; i<this->numAristas; i++) {
-        char* infoArista=this->aristas[i]->toString();
-        agregarTexto("  - ");
-        agregarTexto(infoArista);
-        agregarTexto("\n");
-        delete[] infoArista;
-    }
-    return resultado;
-}
-
-void Grafo::limpiar() {
-    for (int i=0; i<this->numNodos; i++) {
-        delete this->nodos[i];
-        this->nodos[i]=nullptr;
-    }
-    for (int i=0; i<this->numAristas; i++) {
-        delete this->aristas[i];
-        this->aristas[i]=nullptr;
-    }
-    this->numNodos=0;
-    this->numAristas=0;
-}
-
-Grafo::Grafo(const Grafo& otro) {}
-
-Grafo& Grafo::operator=(const Grafo& otro) {
-    return *this;
-}
+} // namespace gps

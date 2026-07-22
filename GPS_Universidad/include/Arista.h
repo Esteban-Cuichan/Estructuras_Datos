@@ -1,49 +1,63 @@
 #ifndef ARISTA_H
 #define ARISTA_H
 
-class Nodo;
+namespace gps {
 
-enum class TipoCamino{
-    PEATONAL,
-    VEHICULAR,
-    RAMPA,
-    ESCALERAS,
-    MIXTO
+enum class TipoCamino {
+    Peatonal,
+    Vehicular,
+    Ciclovia,
+    Sendero,
+    Pasarela,
+    Escalera,
+    Rampa,
+    Desconocido
 };
 
-enum class EstadoCamino{
-    ABIERTO,
-    CERRADO,
-    MANTENIMIENTO,
-    RESTRINGIDO
+enum class EstadoCamino {
+    Bueno,
+    EnObras,
+    Cerrado,
+    Restringido,
+    Desconocido
 };
 
-class Arista{
-    private:
-        int id;
-        Nodo* origen;
-        Nodo* destino;
-        double distancia;
-        TipoCamino tipo;
-        EstadoCamino estado;
-    public:
-        Arista(int,Nodo*,Nodo*,double,TipoCamino);
-        ~Arista();
-        int getId() const;
-        Nodo* getOrigen() const;
-        void setOrigen(Nodo*);
-        Nodo* getDestino() const;
-        void setDestino(Nodo*);
-        double getDistancia() const;
-        void setDistancia(double);
-        TipoCamino getTipo() const;
-        void setTipo(TipoCamino);
-        EstadoCamino getEstado() const;
-        void setEstado(EstadoCamino estado);
-        bool esIgual(Nodo* origen,Nodo* destino) const;
-        char* toString() const;
-    private:
-        Arista(const Arista& otro);
-        Arista& operator=(const Arista& otro);
+enum class Accesibilidad {
+    Accesible,
+    NoAccesible,
+    Parcial,
+    Desconocido
 };
-#endif
+
+class Arista {
+public:
+    Arista(int origenId, int destinoId, double distancia,
+           TipoCamino tipo = TipoCamino::Desconocido,
+           EstadoCamino estado = EstadoCamino::Desconocido,
+           Accesibilidad accesibilidad = Accesibilidad::Desconocido);
+    ~Arista();
+
+    int obtenerOrigenId() const;
+    int obtenerDestinoId() const;
+    double obtenerDistancia() const;
+    TipoCamino obtenerTipo() const;
+    EstadoCamino obtenerEstado() const;
+    Accesibilidad obtenerAccesibilidad() const;
+
+    void establecerDistancia(double distancia);
+    void establecerTipo(TipoCamino tipo);
+    void establecerEstado(EstadoCamino estado);
+    void establecerAccesibilidad(Accesibilidad accesibilidad);
+
+private:
+    int origenId_;
+    int destinoId_;
+    double distancia_;
+    TipoCamino tipo_;
+    EstadoCamino estado_;
+    Accesibilidad accesibilidad_;
+};
+
+} // namespace gps
+
+#endif // ARISTA_H

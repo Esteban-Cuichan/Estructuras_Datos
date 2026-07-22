@@ -2,40 +2,35 @@
 #define DIJKSTRA_H
 
 #include "Grafo.h"
-#include "ListaAdyacencia.h"
-#include <climits>
+
+namespace gps {
 
 class Dijkstra {
-private:
-    Grafo* grafo;
-    double* distancias;
-    int* predecesores;
-    bool* visitados;
-    int numNodos;
-    int origen;
-    int destino;
-    bool caminoEncontrado;
-    static const double INFINITO;
-
-    void inicializar(int origen);
-    int encontrarMinimo();
-    void relajarArista(int actual, Arista* arista);
-
 public:
-    Dijkstra(Grafo* grafo);
+    Dijkstra(const Grafo &grafo);
     ~Dijkstra();
-    bool ejecutar(int origen, int destino);
-    double getDistancia(int nodo) const;
-    int getPredecesor(int nodo) const;
-    int* getCaminoCompleto(int destino) const;
-    int getNumNodos() const;
-    bool hayCamino() const;
-    void imprimirDistancias() const;
-    char* toString() const;
+
+    bool calcularRuta(int origenId, int destinoId);
+    int obtenerNodoSiguiente(int id) const;
+    double obtenerDistanciaTotal() const;
+    int obtenerCantidadNodosRecorridos() const;
 
 private:
-    Dijkstra(const Dijkstra& otro);
-    Dijkstra& operator=(const Dijkstra& otro);
+    const Grafo &grafo_;
+    double *distancias_;
+    int *predecesores_;
+    bool *visitado_;
+    int cantidadNodos_;
+    int origenIndice_;
+    int destinoIndice_;
+    double distanciaTotal_;
+    int nodosRecorridos_;
+
+    int obtenerIndiceMenorDistancia() const;
+    void inicializarEstructuras();
+    void liberarEstructuras();
 };
 
-#endif
+} // namespace gps
+
+#endif // DIJKSTRA_H

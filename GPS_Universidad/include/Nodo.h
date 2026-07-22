@@ -1,45 +1,47 @@
 #ifndef NODO_H
 #define NODO_H
-#include <cstring>
 
-class ListaAdyacencia;
+#include <string>
 
-enum class TipoNodo{
-    BLOQUE,
-    GARITA,
-    ENTRADA,
-    CRUCE,
-    ESCALERA,
-    RAMPA,
-    PARQUEADERO,
-    BAR,
-    BIBLIOTECA,
-    LABORATORIO,
-    AUDITORIO
+namespace gps {
+
+enum class TipoNodo {
+    Garita,
+    Biblioteca,
+    Bloque,
+    Laboratorio,
+    Cafeteria,
+    Parqueadero,
+    Entrada,
+    Cruce,
+    Escalera,
+    Rampa,
+    Auditorio,
+    Desconocido
 };
 
 class Nodo {
-    private:
-        int id;
-        char* nombre;
-        double longitud;
-        double latitud;
-        TipoNodo tipo;
-        ListaAdyacencia* listaAdyacencia;
-    public:
-        Nodo(int,const char*,double,double);
-        ~Nodo();
-        int getId() const;
-        const char* getNombre() const;
-        double getLongitud() const;
-        double getLatitud() const;
-        TipoNodo getTipo() const;
-        void setTipo(TipoNodo);
-        ListaAdyacencia* getListaAdyacencia() const;
-        void setListaAdyacencia(ListaAdyacencia*);
-        char* toString() const;
-    private:
-        Nodo(const Nodo&);
-        Nodo& operator=(const Nodo&);
+public:
+    Nodo(int id, const std::string &nombre, double latitud, double longitud, TipoNodo tipo = TipoNodo::Desconocido);
+    ~Nodo();
+
+    int obtenerId() const;
+    const std::string &obtenerNombre() const;
+    double obtenerLatitud() const;
+    double obtenerLongitud() const;
+    TipoNodo obtenerTipo() const;
+
+    void establecerNombre(const std::string &nombre);
+    void establecerTipo(TipoNodo tipo);
+
+private:
+    int id_;
+    std::string nombre_;
+    double latitud_;
+    double longitud_;
+    TipoNodo tipo_;
 };
-#endif 
+
+} // namespace gps
+
+#endif // NODO_H

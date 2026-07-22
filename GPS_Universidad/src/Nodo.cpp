@@ -1,71 +1,40 @@
-#include "../include/Nodo.h"
-#include "../include/ListaAdyacencia.h"
-#include <cstdio>
-#include <cstdlib>
+#include "Nodo.h"
 
-Nodo::Nodo(int id,const char* nombre,double longitud,double latitud)
-    : id(id),longitud(longitud),latitud(latitud),tipo(TipoNodo::BLOQUE){
-        int longitudNombre=std::strlen(nombre)+1;
-        this->nombre=new char[longitudNombre];
-        std::strcpy(this->nombre, nombre);
-        this->listaAdyacencia=new ListaAdyacencia();
+namespace gps {
+
+Nodo::Nodo(int id, const std::string &nombre, double latitud, double longitud, TipoNodo tipo)
+    : id_(id), nombre_(nombre), latitud_(latitud), longitud_(longitud), tipo_(tipo) {
 }
 
-Nodo::~Nodo(){
-    delete[] this->nombre;
-    delete this->listaAdyacencia;
+Nodo::~Nodo() {
 }
 
-int Nodo::getId() const{
-    return this->id;
+int Nodo::obtenerId() const {
+    return id_;
 }
 
-const char* Nodo::getNombre() const{
-    return this->nombre;
+const std::string &Nodo::obtenerNombre() const {
+    return nombre_;
 }
 
-double Nodo::getLatitud() const{
-    return this->latitud;
+double Nodo::obtenerLatitud() const {
+    return latitud_;
 }
 
-double Nodo::getLongitud() const{
-    return this->longitud;
+double Nodo::obtenerLongitud() const {
+    return longitud_;
 }
 
-TipoNodo Nodo::getTipo() const{
-    return this->tipo;
+TipoNodo Nodo::obtenerTipo() const {
+    return tipo_;
 }
 
-void Nodo::setTipo(TipoNodo tipo){
-    this->tipo=tipo;
+void Nodo::establecerNombre(const std::string &nombre) {
+    nombre_ = nombre;
 }
 
-ListaAdyacencia* Nodo::getListaAdyacencia() const{
-    return this->listaAdyacencia;
+void Nodo::establecerTipo(TipoNodo tipo) {
+    tipo_ = tipo;
 }
 
-void Nodo::setListaAdyacencia(ListaAdyacencia* lista){
-    this->listaAdyacencia=lista;
-}
-
-char* Nodo::toString() const{
-    const int TAMANO_BUFFER=200;
-    char buffer[TAMANO_BUFFER];
-    std::snprintf(buffer, TAMANO_BUFFER,
-                "ID: %d | Nombre: %s | Tipo: %d | (%.6f, %.6f)",
-                this->id,
-                this->nombre,
-                static_cast<int>(this->tipo),
-                this->latitud,
-                this->latitud);
-    int longitudReal=std::strlen(buffer)+1;
-    char* resultado=new char[longitudReal];
-    std:strcpy(resultado,buffer);
-    return resultado;
-}
-
-Nodo::Nodo(const Nodo& otro){}
-
-Nodo& Nodo::operator=(const Nodo& otro){
-    return *this;
-}
+} // namespace gps
