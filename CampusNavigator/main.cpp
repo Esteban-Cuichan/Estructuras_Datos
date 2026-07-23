@@ -1,5 +1,6 @@
 #include <iostream>
 #include "include/Grafo.h"
+#include "include/Dijkstra.h"
 
 using namespace std;
 
@@ -50,6 +51,29 @@ int main()
 
     grafo.mostrarNodos();
     grafo.mostrarConexiones();
+    cout << "\n==========================" << endl;
+    cout << "PRUEBA DEL ALGORITMO DIJKSTRA" << endl;
+    cout << "==========================\n" << endl;
 
-    return 0;
-}
+    Dijkstra algoritmo(&grafo);
+
+    int origen;
+    int destino;
+
+    cout << "Ingrese nodo origen: ";
+    cin >> origen;
+
+    cout << "Ingrese nodo destino: ";
+    cin >> destino;
+
+    if (algoritmo.calcular(origen, destino))
+    {
+        algoritmo.imprimirRuta(destino);
+    }
+    else
+    {
+        cout << "No existe una ruta entre esos nodos." << endl;
+    }
+
+        return 0;
+    }

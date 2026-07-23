@@ -1,5 +1,6 @@
 #include "../include/Nodo.h"
 #include "../include/ListaAristas.h"
+#include <limits>
 
 Nodo::Nodo(int id, const string& nombre)
     : id(id),
@@ -61,9 +62,10 @@ ListaAristas* Nodo::getConexiones() const{
     return aristas;
 }
 
-void Nodo::reiniciar(){
+void Nodo::reiniciar()
+{
     visitado = false;
-    tiempoAcumulado = 0.0;
-    distanciaAcumulada = 0.0;
+    tiempoAcumulado = std::numeric_limits<double>::infinity();
+    distanciaAcumulada = std::numeric_limits<double>::infinity();
     anterior = nullptr;
 }
