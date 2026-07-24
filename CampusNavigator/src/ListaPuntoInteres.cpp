@@ -1,6 +1,8 @@
 #include "../include/ListaPuntoInteres.h"
 
 #include <iostream>
+#include <algorithm>
+#include <cctype>
 
 using namespace std;
 
@@ -67,7 +69,11 @@ PuntoInteres* ListaPuntoInteres::buscarPorNombre(
 
     while (actual != nullptr)
     {
-        if (actual->dato.getNombre() == nombre)
+        if(
+            normalizarNombre(actual->dato.getNombre())
+            ==
+            normalizarNombre(nombre)
+        )
         {
             return &(actual->dato);
         }
@@ -105,7 +111,11 @@ bool ListaPuntoInteres::existeNombre(
 
     while (actual != nullptr)
     {
-        if (actual->dato.getNombre() == nombre)
+        if(
+            normalizarNombre(actual->dato.getNombre())
+            ==
+            normalizarNombre(nombre)
+        )
         {
             return true;
         }
@@ -162,4 +172,33 @@ void ListaPuntoInteres::limpiar()
 
     cabeza = nullptr;
     cantidad = 0;
+}
+string ListaPuntoInteres::normalizarNombre(
+    const string& nombre
+) const
+{
+    string copia = nombre;
+
+    for(char& c : copia)
+    {
+        c = tolower(c);
+    }
+
+    while(
+        !copia.empty() &&
+        isspace(copia.front())
+    )
+    {
+        copia.erase(copia.begin());
+    }
+
+    while(
+        !copia.empty() &&
+        isspace(copia.back())
+    )
+    {
+        copia.pop_back();
+    }
+
+    return copia;
 }

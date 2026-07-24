@@ -18,8 +18,16 @@ public:
     );
 };
 
+
+
 class ListaPuntoInteres
 {
+private:
+
+    string normalizarNombre(
+        const string& nombre
+    ) const;
+     
 private:
     NodoPuntoInteres* cabeza;
     int cantidad;

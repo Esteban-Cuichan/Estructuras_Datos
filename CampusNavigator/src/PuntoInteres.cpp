@@ -1,6 +1,7 @@
 #include "../include/PuntoInteres.h"
-
+#include <iomanip>
 #include <iostream>
+
 
 using namespace std;
 
@@ -9,7 +10,8 @@ PuntoInteres::PuntoInteres()
     idOSM = 0;
 
     nombre = "";
-    tipo = "";
+    categoria = "";
+    subtipo = "";
 
     latitud = 0.0;
     longitud = 0.0;
@@ -18,14 +20,16 @@ PuntoInteres::PuntoInteres()
 PuntoInteres::PuntoInteres(
     long long idOSM,
     const string& nombre,
-    const string& tipo,
+    const string& categoria,
+    const string& subtipo,
     double latitud,
     double longitud
 )
 {
     this->idOSM = idOSM;
     this->nombre = nombre;
-    this->tipo = tipo;
+    this->categoria = categoria;
+    this->subtipo = subtipo;
     this->latitud = latitud;
     this->longitud = longitud;
 }
@@ -44,9 +48,14 @@ string PuntoInteres::getNombre() const
     return nombre;
 }
 
-string PuntoInteres::getTipo() const
+string PuntoInteres::getCategoria() const
 {
-    return tipo;
+    return categoria;
+}
+
+string PuntoInteres::getSubtipo() const
+{
+    return subtipo;
 }
 
 double PuntoInteres::getLatitud() const
@@ -66,11 +75,11 @@ void PuntoInteres::setNombre(
     this->nombre = nombre;
 }
 
-void PuntoInteres::setTipo(
-    const string& tipo
+void PuntoInteres::setCategoria(
+    const string& categoria
 )
 {
-    this->tipo = tipo;
+    this->categoria = categoria;
 }
 
 void PuntoInteres::setLatitud(
@@ -89,10 +98,13 @@ void PuntoInteres::setLongitud(
 
 void PuntoInteres::mostrar() const
 {
+    cout << fixed << setprecision(7);
+
     cout << "Punto de interes" << endl;
     cout << "ID OSM: " << idOSM << endl;
     cout << "Nombre: " << nombre << endl;
-    cout << "Tipo: " << tipo << endl;
+    cout << "Categoria: " << categoria << endl;
+    cout << "Subtipo: " << subtipo << endl;
     cout << "Latitud: " << latitud << endl;
     cout << "Longitud: " << longitud << endl;
 }

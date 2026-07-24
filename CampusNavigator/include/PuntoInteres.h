@@ -11,7 +11,8 @@ private:
     long long idOSM;
 
     string nombre;
-    string tipo;
+    string categoria;
+    string subtipo;
 
     double latitud;
     double longitud;
@@ -20,12 +21,13 @@ public:
     PuntoInteres();
 
     PuntoInteres(
-        long long idOSM,
-        const string& nombre,
-        const string& tipo,
-        double latitud,
-        double longitud
-    );
+    long long idOSM,
+    const string& nombre,
+    const string& categoria,
+    const string& subtipo,
+    double latitud,
+    double longitud
+);
 
     ~PuntoInteres();
 
@@ -33,7 +35,9 @@ public:
 
     string getNombre() const;
 
-    string getTipo() const;
+    string getCategoria() const;
+
+    string getSubtipo() const;
 
     double getLatitud() const;
 
@@ -43,8 +47,12 @@ public:
         const string& nombre
     );
 
-    void setTipo(
-        const string& tipo
+    void setCategoria(
+        const string& categoria
+    );
+
+    void setSubtipo(
+        const string& subtipo
     );
 
     void setLatitud(
