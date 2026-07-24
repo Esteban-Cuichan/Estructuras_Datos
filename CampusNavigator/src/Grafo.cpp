@@ -21,9 +21,29 @@ Grafo::~Grafo()
     nodos = nullptr;
 }
 
-bool Grafo::agregarNodo(int id, const string& nombre)
+bool Grafo::agregarNodo(
+    int id,
+    const string& nombre,
+    double latitud,
+    double longitud
+)
 {
-    if (id < 0 || nombre.empty())
+    if (id < 0)
+    {
+        return false;
+    }
+
+    if (nombre.empty())
+    {
+        return false;
+    }
+
+    if (latitud < -90.0 || latitud > 90.0)
+    {
+        return false;
+    }
+
+    if (longitud < -180.0 || longitud > 180.0)
     {
         return false;
     }
@@ -33,7 +53,12 @@ bool Grafo::agregarNodo(int id, const string& nombre)
         return false;
     }
 
-    Nodo* nuevoNodo = new Nodo(id, nombre);
+    Nodo* nuevoNodo = new Nodo(
+        id,
+        nombre,
+        latitud,
+        longitud
+    );
 
     nodos->insertar(nuevoNodo);
 
@@ -88,6 +113,11 @@ bool Grafo::agregarConexionBidireccional(
     double tiempo
 )
 {
+    if (idNodoA == idNodoB)
+    {
+        return false;
+    }
+
     bool conexionA = agregarConexion(
         idNodoA,
         idNodoB,
@@ -185,6 +215,14 @@ void Grafo::mostrarNodos() const
                  << " - "
                  << nodoActual->getNombre()
                  << endl;
+
+            cout << "   Latitud: "
+                 << nodoActual->getLatitud()
+                 << endl;
+
+            cout << "   Longitud: "
+                 << nodoActual->getLongitud()
+                 << endl;
         }
 
         actual = actual->getSiguiente();
@@ -202,11 +240,13 @@ void Grafo::mostrarConexiones() const
     cout << "\nCONEXIONES DEL GRAFO" << endl;
     cout << "====================" << endl;
 
-    ElementoNodo* elementoNodo = nodos->getPrimero();
+    ElementoNodo* elementoNodo =
+        nodos->getPrimero();
 
     while (elementoNodo != nullptr)
     {
-        Nodo* nodoOrigen = elementoNodo->getNodo();
+        Nodo* nodoOrigen =
+            elementoNodo->getNodo();
 
         if (nodoOrigen != nullptr)
         {
@@ -241,10 +281,13 @@ void Grafo::mostrarConexiones() const
                         arista->getDestino() != nullptr
                     )
                     {
+                        Nodo* destino =
+                            arista->getDestino();
+
                         cout << "  -> "
-                             << arista->getDestino()->getId()
+                             << destino->getId()
                              << " - "
-                             << arista->getDestino()->getNombre()
+                             << destino->getNombre()
                              << " | Distancia: "
                              << arista->getDistancia()
                              << " metros"
@@ -260,6 +303,7 @@ void Grafo::mostrarConexiones() const
             }
         }
 
-        elementoNodo = elementoNodo->getSiguiente();
+        elementoNodo =
+            elementoNodo->getSiguiente();
     }
 }
